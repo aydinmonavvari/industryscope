@@ -1,5 +1,5 @@
 'use client'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import Nav from '@/components/industrial/Nav'
 import Hero from '@/components/industrial/Hero'
 import LiveWorld from '@/components/industrial/LiveWorld'
@@ -10,20 +10,25 @@ import SupplyChainRisk from '@/components/industrial/SupplyChainRisk'
 import AiCopilot from '@/components/industrial/AiCopilot'
 import ScopeEcosystem from '@/components/industrial/ScopeEcosystem'
 import ScopeIntelligence from '@/components/industrial/ScopeIntelligence'
+import Testimonials from '@/components/industrial/Testimonials'
 import EnterpriseCTA from '@/components/industrial/EnterpriseCTA'
+import Contact from '@/components/industrial/Contact'
 import Footer from '@/components/industrial/Footer'
+import OwnerDashboard from '@/components/industrial/OwnerDashboard'
+import { useI18n } from '@/lib/i18n'
 
 export default function Home() {
-  const scrollToPlatform = useCallback(() => {
-    const el = document.getElementById('command-center')
+  const [ownerOpen, setOwnerOpen] = useState(false)
+  const scrollToPlatform = useCallback((id: string) => {
+    const el = document.getElementById(id)
     el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
   return (
     <div id="top" className="min-h-screen flex flex-col">
-      <Nav onEnterDemo={scrollToPlatform} />
+      <Nav onEnterDemo={() => scrollToPlatform('command-center')} onOwnerPanel={() => setOwnerOpen(true)} />
       <main className="flex-1 flex flex-col">
-        <Hero onEnterDemo={scrollToPlatform} />
+        <Hero onEnterDemo={() => scrollToPlatform('command-center')} />
         <LiveWorld />
         <div id="command-center" className="px-4 sm:px-6 lg:px-8 py-16 sm:py-24 max-w-7xl mx-auto w-full">
           <CommandCenterIntro />
@@ -37,15 +42,16 @@ export default function Home() {
         <AiCopilot />
         <ScopeEcosystem />
         <ScopeIntelligence />
+        <Testimonials />
         <EnterpriseCTA />
+        <Contact />
       </main>
       <Footer />
+      <OwnerDashboard open={ownerOpen} onOpenChange={setOwnerOpen} />
     </div>
   )
 }
 
-// Localized intro for the command center section
-import { useI18n } from '@/lib/i18n'
 function CommandCenterIntro() {
   const { t } = useI18n()
   return (

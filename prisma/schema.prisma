@@ -338,3 +338,62 @@ model AuditLog {
 
   @@index([organizationId, createdAt])
 }
+
+// --------------------------------------------------------------------------- Public inbound (CRM / marketing)
+// These are NOT tenant-bound — they are public inbound leads for the
+// IndustryScope business itself (the company selling the product).
+// Used by the Contact, Demo-request, Quote-request, and Newsletter forms.
+
+model Lead {
+  id        String   @id @default(cuid())
+  type      String   // contact | demo | quote | newsletter | partnership
+  name      String?
+  email     String
+  phone     String?
+  company   String?
+  role      String?
+  country   String?
+  message   String?
+  tier      String?  // for quote: starter | growth | enterprise
+  sites     Int?
+  status    String   @default("new") // new | contacted | qualified | won | lost
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type, status, createdAt])
+  @@index([email])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String   @default("footer")
+  createdAt DateTime @default(now())
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  company   String
+  quote     String
+  rating    Int      @default(5)
+  avatar    String?
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  category  String
+  title     String
+  insight   String
+  body      String   // markdown-ish full content
+  stat      String?
+  statLabel String?
+  delta     String?
+  readMins  Int      @default(6)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

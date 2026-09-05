@@ -2,10 +2,11 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Menu, X, Hexagon, ArrowRight, Languages } from 'lucide-react'
+import { Menu, X, Hexagon, ArrowRight, Languages, Phone, ShieldCheck } from 'lucide-react'
 import { useI18n } from '@/lib/i18n'
+import { CONTACT } from '@/lib/config'
 
-export default function Nav({ onEnterDemo }: { onEnterDemo: () => void }) {
+export default function Nav({ onEnterDemo, onOwnerPanel }: { onEnterDemo: () => void; onOwnerPanel: () => void }) {
   const { t, toggle, lang } = useI18n()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -55,14 +56,19 @@ export default function Nav({ onEnterDemo }: { onEnterDemo: () => void }) {
         </nav>
 
         <div className="hidden lg:flex items-center gap-2">
-          {/* Language switcher: فارسی | EN */}
-          <button
-            onClick={toggle}
+          <button onClick={toggle}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md glass text-sm hover:bg-foreground/5 transition-colors"
             aria-label="Switch language"
           >
             <Languages className="h-4 w-4 text-emerald-accent" />
             <span className="font-semibold">{lang === 'fa' ? 'EN' : 'فارسی'}</span>
+          </button>
+          <a href={`tel:${CONTACT.phoneRaw}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md glass text-sm hover:bg-foreground/5 transition-colors" dir="ltr" style={{ direction: 'ltr' }}>
+            <Phone className="h-4 w-4 text-emerald-accent" />
+            <span className="font-mono font-semibold tabular-nums">{CONTACT.phoneRaw}</span>
+          </a>
+          <button onClick={onOwnerPanel} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md glass text-sm hover:bg-foreground/5 transition-colors" aria-label={t.owner.navLabel}>
+            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
           </button>
           <Button variant="ghost" size="sm" onClick={() => scrollTo('enterprise')} className="text-muted-foreground">{t.nav.talkEnterprise}</Button>
           <Button size="sm" onClick={onEnterDemo} className="bg-primary text-primary-foreground hover:bg-primary/90">
@@ -71,6 +77,9 @@ export default function Nav({ onEnterDemo }: { onEnterDemo: () => void }) {
         </div>
 
         <div className="lg:hidden flex items-center gap-1">
+          <a href={`tel:${CONTACT.phoneRaw}`} className="p-2 rounded-md glass" aria-label="Call">
+            <Phone className="h-5 w-5 text-emerald-accent" />
+          </a>
           <button onClick={toggle} className="p-2 rounded-md glass" aria-label="Switch language">
             <Languages className="h-5 w-5 text-emerald-accent" />
           </button>

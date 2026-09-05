@@ -6,6 +6,10 @@ import { Input } from '@/components/ui/input'
 import { Boxes, Search, Filter, AlertTriangle, TrendingDown, PackageCheck, Layers } from 'lucide-react'
 import { KpiCard, SectionHeading, SectionShell } from './shared'
 import { useI18n } from '@/lib/i18n'
+import { toast } from 'sonner'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 
 type Item = {
   id: string; sku: string; name: string; category: string; abcClass: string; unit: string
@@ -30,6 +34,10 @@ export default function InventoryIntelligence() {
   const [q, setQ] = useState('')
   const [data, setData] = useState<Resp | null>(null)
   const [loading, setLoading] = useState(true)
+  const [adjustItem, setAdjustItem] = useState<Item | null>(null)
+  const [delta, setDelta] = useState('')
+  const [reason, setReason] = useState('')
+  const [adjusting, setAdjusting] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -41,6 +49,20 @@ export default function InventoryIntelligence() {
   }, [tab])
 
   useEffect(() => { load() }, [load])
+
+  const submitAdjust = async () => {
+    if (!adjustItem) return
+    const d = parseInt(delta, 10)
+    if (Number.isNaN(d) || d === 0) { toast.error(lang === 'fa' ? 'عدد معتبر وارد کنید' : 'Enter a valid number'); return }
+    setAdjusting(true)
+    try {
+      const r = await fetch('/api/inventory/adjust', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ itemId: adjustItem.id, delta: d, reason }) })
+      const res = await r.json()
+      if (res.ok) { toast.success(lang === 'fa' ? 'موجودی تعدیل شد ✓' : 'Inventory adjusted ✓'); setAdjustItem(null); setDelta(''); setReason(''); load() }
+      else toast.error(res.error || 'error')
+    } catch { toast.error('error') }
+    finally { setAdjusting(false) }
+  }
 
   const items = data?.items.filter(i => !q || i.name.toLowerCase().includes(q.toLowerCase()) || i.sku.toLowerCase().includes(q.toLowerCase())) ?? []
   const s = data?.summary
@@ -107,6 +129,7 @@ export default function InventoryIntelligence() {
                   <th className="font-medium px-2 py-2 text-right">{inv.cols.coverage}</th>
                   <th className="font-medium px-2 py-2 text-right">{inv.cols.capital}</th>
                   <th className="font-medium px-2 py-2 text-right">{inv.cols.health}</th>
+                  <th className="font-medium px-2 py-2 text-right">{lang === 'fa' ? 'اقدام' : 'Action'}</th>
                 </tr>
               </thead>
               <tbody>
@@ -130,6 +153,11 @@ export default function InventoryIntelligence() {
                           {i.health === 'stockout' ? inv.tabs.stockout : i.health === 'low_stock' ? inv.tabs.low : i.health === 'overstock' ? inv.tabs.overstock : inv.tabs.healthy}
                         </span>
                       </td>
+                      <td className="px-2 py-2.5 text-right">
+                        <button onClick={() => setAdjustItem(i)} className="text-[11px] px-2 py-1 rounded border border-border/40 hover:border-primary/40 hover:bg-primary/5 text-muted-foreground hover:text-emerald-accent transition-colors">
+                          {(t as any).actions?.adjust || 'Adjust'}
+                        </button>
+                      </td>
                     </tr>
                   )
                 })}
@@ -144,6 +172,34 @@ export default function InventoryIntelligence() {
           </div>
         )}
       </Card>
+
+      <Dialog open={!!adjustItem} onOpenChange={(v) => !v && setAdjustItem(null)}>
+        <DialogContent className="max-w-md glass-strong">
+          <DialogHeader>
+            <DialogTitle className="text-lg">{(t as any).actions?.adjustTitle || 'Adjust inventory'}</DialogTitle>
+          </DialogHeader>
+          {adjustItem && (
+            <div className="space-y-3">
+              <div className="text-xs text-muted-foreground">
+                <span className="font-mono">{adjustItem.sku}</span> · {adjustItem.name} · {adjustItem.warehouse}
+              </div>
+              <div className="text-sm">{lang === 'fa' ? 'موجودی فعلی' : 'Current on-hand'}: <span className="font-semibold tabular-nums">{adjustItem.onHand.toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US')}</span></div>
+              <div>
+                <Label className="text-xs">{(t as any).actions?.adjustDelta || 'Delta (+/-)'}</Label>
+                <Input value={delta} onChange={e => setDelta(e.target.value)} type="number" dir="ltr" placeholder="+50 / -20" className="mt-1 bg-background/60" />
+              </div>
+              <div>
+                <Label className="text-xs">{(t as any).actions?.adjustReason || 'Reason'}</Label>
+                <Input value={reason} onChange={e => setReason(e.target.value)} placeholder={lang === 'fa' ? 'دلیل تعدیل' : 'Adjustment reason'} className="mt-1 bg-background/60" />
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setAdjustItem(null)}>{(t as any).actions?.cancel || 'Cancel'}</Button>
+                <Button onClick={submitAdjust} disabled={adjusting} className="bg-primary text-primary-foreground">{(t as any).actions?.confirm || 'Confirm'}</Button>
+              </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </SectionShell>
   )
 }

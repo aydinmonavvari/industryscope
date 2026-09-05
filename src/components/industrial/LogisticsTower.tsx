@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { Truck, MapPin, Clock, AlertTriangle, Package, Navigation } from 'lucide-react'
 import { KpiCard, SectionHeading, SectionShell } from './shared'
 import { useI18n } from '@/lib/i18n'
+import { toast } from 'sonner'
 
 type Shipment = {
   id: string; reference: string; status: string; carrier: string; supplier: string | null
@@ -49,6 +50,15 @@ export default function LogisticsTower() {
 
   const selected = data?.shipments.find(s => s.id === sel) ?? null
   const statusLabel = (s: string) => (lg.pipeline as Record<string, string>)[s] ?? s
+
+  const advance = async (id: string) => {
+    try {
+      const r = await fetch('/api/shipment/advance', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) })
+      const d = await r.json()
+      if (d.ok) { toast.success(lang === 'fa' ? 'وضعیت محموله پیش رفت ✓' : 'Shipment advanced ✓'); load() }
+      else toast.error(d.error || 'error')
+    } catch { toast.error('error') }
+  }
 
   return (
     <SectionShell id="logistics">
@@ -134,6 +144,11 @@ export default function LogisticsTower() {
                   <div className="mt-1 text-xs text-muted-foreground">{selected.carrier}{selected.supplier ? ` · ${selected.supplier}` : ''} · {selected.distanceKm ?? '—'} km</div>
                 </div>
                 <span className={cn('text-xs px-2 py-1 rounded border font-semibold uppercase', STATUS_CLS[selected.status])}>{statusLabel(selected.status)}</span>
+                {selected.status !== 'DELIVERED' && selected.status !== 'CANCELLED' && (
+                  <button onClick={() => advance(selected.id)} className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+                    {(t as any).actions?.advance || 'Advance'} →
+                  </button>
+                )}
               </div>
 
               {/* Route viz (SVG) */}

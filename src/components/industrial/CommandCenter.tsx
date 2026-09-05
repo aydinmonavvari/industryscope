@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { SeverityBadge, ConfidenceMeter, DataStateDot, KpiCard } from './shared'
 import { useI18n } from '@/lib/i18n'
+import { toast } from 'sonner'
 
 type Alert = {
   id: string; severity: string; category: string; title: string; message: string
@@ -52,6 +53,8 @@ export default function CommandCenter() {
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [acknowledged, setAcknowledged] = useState<Set<string>>(new Set())
+  const [resolved, setResolved] = useState<Set<string>>(new Set())
+  const [recStates, setRecStates] = useState<Record<string, string>>({})
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -68,6 +71,36 @@ export default function CommandCenter() {
   const ack = async (id: string) => {
     setAcknowledged(s => new Set(s).add(id))
     try { await fetch('/api/ack-alert', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ alertId: id }) }) } catch { /* ignore */ }
+  }
+  const resolve = async (id: string) => {
+    try {
+      const r = await fetch('/api/alert/resolve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) })
+      const d = await r.json()
+      if (d.ok) { setResolved(s => new Set(s).add(id)); toast.success(t.toasts ? (t as any).actions?.resolved || cc.acknowledged : cc.acknowledged) }
+    } catch { toast.error((t as any).toasts?.err || 'error') }
+  }
+  const snooze = async (id: string) => {
+    try {
+      const r = await fetch('/api/alert/snooze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, hours: 24 }) })
+      const d = await r.json()
+      if (d.ok) { setAcknowledged(s => new Set(s).add(id)); toast.success((t as any).actions?.snoozed || 'snoozed') }
+    } catch { toast.error((t as any).toasts?.err || 'error') }
+  }
+  const approveRec = async (id: string) => {
+    try {
+      const r = await fetch('/api/recommendation/approve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) })
+      const d = await r.json()
+      if (d.ok) { setRecStates(s => ({ ...s, [id]: 'approved' })); toast.success((t as any).actions?.approved || 'approved') }
+      else toast.error(d.error || 'error')
+    } catch { toast.error('error') }
+  }
+  const executeRec = async (id: string) => {
+    try {
+      const r = await fetch('/api/recommendation/execute', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) })
+      const d = await r.json()
+      if (d.ok) { setRecStates(s => ({ ...s, [id]: 'executed' })); toast.success((t as any).actions?.executed || 'executed') }
+      else toast.error((t as any).actions?.needApproveFirst || d.error || 'error')
+    } catch { toast.error('error') }
   }
 
   if (loading || !data) {
@@ -173,13 +206,22 @@ export default function CommandCenter() {
                     )}
                     <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                       <span className="text-[11px] text-muted-foreground font-mono">{cc.source}: {a.source}</span>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline" onClick={() => ack(a.id)} disabled={isAck} className="h-8 text-xs">
-                          {isAck ? cc.acknowledged : cc.acknowledge}
-                        </Button>
-                        <Button size="sm" className="h-8 text-xs bg-primary text-primary-foreground">
-                          {a.category === 'inventory' ? cc.preparePO : a.category === 'logistics' ? cc.trackShipment : cc.review} <ArrowRight className="ml-1.5 h-3 w-3 rtl-flip" />
-                        </Button>
+                      <div className="flex flex-wrap gap-2">
+                        {!acknowledged.has(a.id) && !resolved.has(a.id) && (
+                          <Button size="sm" variant="outline" onClick={() => ack(a.id)} className="h-8 text-xs">{cc.acknowledge}</Button>
+                        )}
+                        {!resolved.has(a.id) && (
+                          <>
+                            <Button size="sm" variant="outline" onClick={() => snooze(a.id)} disabled={acknowledged.has(a.id)} className="h-8 text-xs">{(t as any).actions?.snooze || 'Snooze'}</Button>
+                            <Button size="sm" variant="outline" onClick={() => resolve(a.id)} className="h-8 text-xs">{(t as any).actions?.resolve || 'Resolve'}</Button>
+                            <Button size="sm" className="h-8 text-xs bg-primary text-primary-foreground">
+                              {a.category === 'inventory' ? cc.preparePO : a.category === 'logistics' ? cc.trackShipment : cc.review} <ArrowRight className="ml-1.5 h-3 w-3 rtl-flip" />
+                            </Button>
+                          </>
+                        )}
+                        {resolved.has(a.id) && (
+                          <span className="text-[11px] text-emerald-accent flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> {(t as any).actions?.resolved || 'Resolved'}</span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -229,6 +271,21 @@ export default function CommandCenter() {
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">{r.summary}</p>
                 {r.impact && <p className="mt-1 text-[11px] text-emerald-accent/90">{r.impact}</p>}
+                <div className="mt-2 flex items-center gap-2">
+                  {(() => {
+                    const st = recStates[r.id] || 'pending'
+                    if (st === 'executed') return <span className="text-[11px] text-emerald-accent flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> {(t as any).actions?.executed || 'Executed'}</span>
+                    if (st === 'approved') return (
+                      <>
+                        <span className="text-[11px] text-emerald-accent flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> {(t as any).actions?.approved || 'Approved'}</span>
+                        <Button size="sm" onClick={() => executeRec(r.id)} className="h-7 text-xs bg-primary text-primary-foreground">{(t as any).actions?.execute || 'Execute'}</Button>
+                      </>
+                    )
+                    return (
+                      <Button size="sm" variant="outline" onClick={() => approveRec(r.id)} className="h-7 text-xs">{(t as any).actions?.approve || 'Approve'}</Button>
+                    )
+                  })()}
+                </div>
               </div>
             ))}
           </div>
