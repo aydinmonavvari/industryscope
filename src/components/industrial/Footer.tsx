@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
-import { Hexagon, Phone, Mail, MessageCircle, Send, Loader2 } from 'lucide-react'
+import { Hexagon, Phone, Mail, MessageCircle, Send, Loader2, ArrowUpRight } from 'lucide-react'
 import { useI18n } from '@/lib/i18n'
+import { useRouter } from '@/lib/router'
 import { cn } from '@/lib/utils'
 import { CONTACT } from '@/lib/config'
 import { toast } from 'sonner'
@@ -11,6 +12,7 @@ import { Input } from '@/components/ui/input'
 
 export default function Footer() {
   const { t, lang } = useI18n()
+  const { navigate } = useRouter()
   const f = t.footer
   const fr = t.forms
   const [newsEmail, setNewsEmail] = useState('')
@@ -60,20 +62,63 @@ export default function Footer() {
               {f.operational}
             </div>
           </div>
-          {f.cols.map(c => (
+          {f.cols.map(c => {
+            // Map link labels to routes
+            const routeFor = (l: string): { hash?: string; ext?: string } => {
+              const map: Record<string, string> = {
+                // Platform
+                'مرکز فرماندهی': 'command-center', 'Command Center': 'command-center',
+                'هوشمندی موجودی': 'inventory', 'Inventory Intelligence': 'inventory',
+                'برج کنترل لجستیک': 'logistics', 'Logistics Control Tower': 'logistics',
+                'ریسک زنجیره تأمین': 'risk', 'Supply Chain Risk': 'risk',
+                'دستیار هوش مصنوعی': 'copilot', 'AI Copilot': 'copilot',
+                // Company
+                'تماس': 'contact', 'Contact': 'contact',
+                'قیمت‌گذاری': 'enterprise', 'Pricing': 'enterprise',
+                'اکوسیستم': 'ecosystem', 'Ecosystem': 'ecosystem',
+                // Articles + category labels all go to articles page
+                'مقالات': 'intelligence', 'Articles': 'intelligence',
+                'صنعت': 'intelligence', 'لجستیک': 'intelligence', 'زنجیره تأمین': 'intelligence',
+                'هوش مصنوعی': 'intelligence', 'تولید': 'intelligence', 'اقتصاد': 'intelligence', 'عملیات': 'intelligence',
+                'Industry': 'intelligence', 'Logistics': 'intelligence', 'Supply Chain': 'intelligence',
+                'AI': 'intelligence', 'Manufacturing': 'intelligence', 'Economy': 'intelligence', 'Operations': 'intelligence',
+                // Company extras
+                'شرکای طراحی': 'enterprise', 'Design Partners': 'enterprise',
+              }
+              return { hash: map[l] }
+            }
+            const extFor = (l: string): string | null => {
+              const m: Record<string, string> = {
+                'ScopeOS': 'https://scopeos.ir', 'FinScope': 'https://finscope.ir', 'GoldScope': 'https://goldscope.ir', 'VestaScope': 'https://vestascope.ir', 'HealthScope': 'https://healthscope.ir', 'IndustryScope': '/',
+              }
+              return m[l] ?? null
+            }
+            return (
             <div key={c.title}>
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-3">{c.title}</div>
               <ul className="space-y-2">
-                {c.links.map(l => (
-                  <li key={l}>
-                    <button onClick={() => { if (l === 'Privacy' || l === 'حریم خصوصی') setLegal('privacy'); else if (l === 'Terms' || l === 'شرایط استفاده') setLegal('terms'); else { const el = document.getElementById(l.toLowerCase().replace(/\s+/g, '-')); el?.scrollIntoView({ behavior: 'smooth' }); } }} className="text-sm text-foreground/80 hover:text-emerald-accent transition-colors text-left">
-                      {l}
-                    </button>
-                  </li>
-                ))}
+                {c.links.map(l => {
+                  const r = routeFor(l)
+                  const ext = extFor(l)
+                  const handle = () => {
+                    if (l === 'Privacy' || l === 'حریم خصوصی') return setLegal('privacy')
+                    if (l === 'Terms' || l === 'شرایط استفاده') return setLegal('terms')
+                    if (ext) { if (ext === '/') navigate(''); else window.open(ext, '_blank'); return }
+                    if (r.hash) navigate(r.hash)
+                  }
+                  return (
+                    <li key={l}>
+                      <button onClick={handle} className="text-sm text-foreground/80 hover:text-emerald-accent transition-colors text-left flex items-center gap-1 group">
+                        {l}
+                        {ext && ext !== '/' && <ArrowUpRight className="h-2.5 w-2.5 opacity-0 group-hover:opacity-60 transition-opacity" />}
+                      </button>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
-          ))}
+            )
+          })}
           {/* Newsletter */}
           <div>
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-3">{lang === 'fa' ? 'خبرنامه' : 'Newsletter'}</div>
@@ -86,11 +131,8 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-10 pt-6 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-          <span>{f.copy}</span>
-          <div className="flex items-center gap-4 font-mono">
-            <span>{f.version}</span>
-            <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-primary breathe" /> {f.dataSeeded}</span>
-          </div>
+          <span>© {new Date().getFullYear()} {f.copy}</span>
+          <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-accent breathe" /> IndustryScope</span>
         </div>
         {/* Founder signature */}
         <div className="mt-4 pt-3 border-t border-border/20 text-center">

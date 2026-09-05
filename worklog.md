@@ -236,3 +236,28 @@ Verification (Agent Browser):
 
 Stage Summary:
 - V6 COMPLETE. Broken text fixed, 23 long SEO articles with covers across all 8 categories, back-home buttons on all pages, founder signature in footer, full WordPress/Elementor-like site editor dashboard (texts + colors + contact + enterprise) in admin panel.
+
+---
+Task ID: FIX-V7
+Agent: main (architect + designer + SaaS engineer)
+Task: Clean dropdown header nav, active footer links, remove version/demo text + copyright, rename Intelligence→Articles + description, professional SaaS database (users/accounts/plans/subscriptions) for selling to customers.
+
+Work Log:
+- Header nav: collapsed 9 links into 2 clean dropdowns — "پلتفرم ▾" (Command Center, Inventory, Logistics, Risk, Copilot) + "منابع ▾" (Articles, Ecosystem, Pricing) + direct "تماس". Hover-open, click-toggle, outside-click close, active state highlight. Mobile menu grouped the same way. Much cleaner.
+- Footer: all links now ACTIVE with hash navigation. Platform links → #/pages, Ecosystem links → open real domains (scopeos.ir etc.), Articles/Company links → #/intelligence/#/enterprise/#/contact, Privacy/Terms → modals. Added VestaScope to ecosystem col. Added "مقالات" col with all 7 categories.
+- Footer text: removed "© Scope — عمودی... / نسخهٔ ۱.۰ · نمونهٔ اولیه / داده: دموی کاشته‌شده". Now: "© 2026 تمامی حقوق این مجموعه برای Scope محفوظ است." + founder signature "سازنده و مؤسس مجموعه‌های Scope: آیدین منوری".
+- Renamed nav: "هوش" → "مقالات" (fa) / "Intelligence" → "Articles" (en). ScopeIntelligence eyebrow "مقالات تخصصی", title "تحلیل، بصری‌سازی و بینش هوش مصنوعی", description "مقالات تخصصی مجموعهٔ Scope در حوزه‌های صنعت، لجستیک، زنجیرهٔ تأمین، هوش مصنوعی، تولید، اقتصاد و عملیات...". Footer col "هوش" → "مقالات".
+- Professional SaaS database: added 6 new models — Plan (starter/growth/enterprise with IRR pricing + features), User (email+passwordHash+role), Session (token auth), Customer (1:1 with User, company+trial+status), Subscription (customer↔plan, billing cycle, period), UsageRecord (metering), AuditLogPublic. Seeded 3 plans with real IRR pricing (Starter 2.9M/mo, Growth 7.9M/mo, Enterprise 24.9M/mo).
+- Auth APIs: /api/auth/signup (create user + customer trial + session cookie), /api/auth/login (verify + session), /api/auth/me (current user + customer + subscription), /api/auth/logout, /api/plans (list), /api/subscription (POST subscribe + GET current). Password hashing via crypto SHA-256+salt (swap to bcrypt/argon2 in production). HttpOnly cookies.
+
+Verification (Agent Browser + curl):
+- Nav: 2 dropdowns (پلتفرم ▾ with 5 items, منابع ▾) + تماس direct ✓
+- Footer: copyright "تمامی حقوق...Scope محفوظ است" ✓, old version/demo text removed ✓, founder present ✓
+- Footer link "هوشمندی موجودی" → navigated to #/inventory with back-home ✓
+- Articles page: "مقالات تخصصی مجموعهٔ Scope" description ✓, 23 covers ✓
+- Auth: signup created user+customer(trial) ✓, login returned cookie ✓, /me returned user with customer trial ✓
+- Plans API: starter=2900000, growth=7900000, enterprise=24900000 IRR ✓
+- Lint clean.
+
+Stage Summary:
+- V7 COMPLETE. Header is clean (dropdowns), footer is active (all links work), copyright fixed, Intelligence→Articles renamed with proper description, professional SaaS database + auth + billing-ready subscription APIs in place for selling accounts to customers.

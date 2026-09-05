@@ -411,3 +411,112 @@ model SiteSetting {
   value     String   // text or JSON
   updatedAt DateTime @updatedAt
 }
+
+// --------------------------------------------------------------------------- Professional SaaS: User accounts, plans, subscriptions
+// Multi-tenant SaaS billing: users sign up, pick a plan, get an organization,
+// and consume the product. Tiered plans (Starter/Growth/Enterprise) map to pricing.
+
+model Plan {
+  id           String   @id @default(cuid())
+  code         String   @unique  // starter | growth | enterprise
+  name         String
+  description  String
+  priceMonthly Int      @default(0)   // in IRR (Rial) — stored as integer to avoid float
+  priceYearly  Int      @default(0)
+  maxUsers     Int      @default(5)
+  maxSites     Int      @default(3)
+  features     String   @default("[]") // JSON array of feature strings
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  subscriptions Subscription[]
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  name          String?
+  phone         String?
+  role          String   @default("customer") // customer | admin
+  emailVerified DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  customer      Customer?
+  sessions      Session[]
+  auditLogs     AuditLogPublic[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Customer {
+  id            String   @id @default(cuid())
+  userId        String   @unique  // 1:1 with User (the owner of this customer record)
+  companyName   String
+  industry      String   @default("Manufacturing")
+  country       String   @default("Iran")
+  status        String   @default("trial") // trial | active | suspended | cancelled
+  trialEndsAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+  usageRecords  UsageRecord[]
+}
+
+model Subscription {
+  id              String   @id @default(cuid())
+  customerId      String
+  planId          String
+  status          String   @default("active") // active | past_due | cancelled | ended
+  billingCycle    String   @default("monthly") // monthly | yearly
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  plan            Plan     @relation(fields: [planId], references: [id])
+
+  @@index([customerId])
+}
+
+model UsageRecord {
+  id          String   @id @default(cuid())
+  customerId  String
+  metric      String   // ai_calls | shipments | sites | users
+  count       Int      @default(0)
+  periodStart DateTime
+  periodEnd   DateTime
+  createdAt   DateTime @default(now())
+
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId, metric])
+}
+
+model AuditLogPublic {
+  id          String   @id @default(cuid())
+  userId      String?
+  action      String
+  ip          String?
+  meta        String?  // JSON
+  createdAt   DateTime @default(now())
+
+  user        User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+}
