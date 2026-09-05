@@ -1,0 +1,210 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* IndustryScope — Industrial Spatial Interface (default dark) */
+:root {
+  --radius: 0.75rem;
+
+  /* Deep navy / graphite / near-black base */
+  --background: oklch(0.13 0.02 250);
+  --foreground: oklch(0.96 0.01 220);
+
+  --card: oklch(0.17 0.025 250);
+  --card-foreground: oklch(0.96 0.01 220);
+
+  --popover: oklch(0.16 0.025 250);
+  --popover-foreground: oklch(0.96 0.01 220);
+
+  /* Scope emerald accent */
+  --primary: oklch(0.72 0.16 165);
+  --primary-foreground: oklch(0.12 0.03 250);
+
+  --secondary: oklch(0.22 0.03 250);
+  --secondary-foreground: oklch(0.92 0.01 220);
+
+  --muted: oklch(0.2 0.02 250);
+  --muted-foreground: oklch(0.66 0.02 220);
+
+  --accent: oklch(0.72 0.16 165);
+  --accent-foreground: oklch(0.12 0.03 250);
+
+  --destructive: oklch(0.64 0.22 25);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.72 0.16 165 / 50%);
+
+  /* Severity / state semantic colors */
+  --sev-critical: oklch(0.64 0.24 25);
+  --sev-high: oklch(0.7 0.18 45);
+  --sev-medium: oklch(0.75 0.14 80);
+  --sev-low: oklch(0.7 0.13 200);
+  --sev-info: oklch(0.6 0.05 230);
+
+  /* Charts — industrial palette */
+  --chart-1: oklch(0.72 0.16 165);   /* emerald */
+  --chart-2: oklch(0.62 0.18 230);   /* steel blue */
+  --chart-3: oklch(0.7 0.14 80);    /* amber */
+  --chart-4: oklch(0.64 0.22 25);   /* red */
+  --chart-5: oklch(0.7 0.13 300);   /* violet */
+
+  --sidebar: oklch(0.15 0.025 250);
+  --sidebar-foreground: oklch(0.92 0.01 220);
+  --sidebar-primary: oklch(0.72 0.16 165);
+  --sidebar-primary-foreground: oklch(0.12 0.03 250);
+  --sidebar-accent: oklch(0.22 0.03 250);
+  --sidebar-accent-foreground: oklch(0.96 0.01 220);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.72 0.16 165 / 50%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.72 0.16 165 / 8%), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, oklch(0.62 0.18 230 / 6%), transparent);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Industrial utilities */
+@layer utilities {
+  .glass {
+    background: linear-gradient(180deg, oklch(1 0 0 / 4%), oklch(1 0 0 / 1%));
+    backdrop-filter: blur(14px) saturate(120%);
+    border: 1px solid oklch(1 0 0 / 8%);
+  }
+  .glass-strong {
+    background: linear-gradient(180deg, oklch(1 0 0 / 7%), oklch(1 0 0 / 2%));
+    backdrop-filter: blur(20px) saturate(130%);
+    border: 1px solid oklch(1 0 0 / 10%);
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(oklch(1 0 0 / 4%) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(1 0 0 / 4%) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: center;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 40%, transparent 100%);
+  }
+  .text-emerald-accent { color: oklch(0.72 0.16 165); }
+  .bg-emerald-accent { background-color: oklch(0.72 0.16 165); }
+  .border-emerald-accent { border-color: oklch(0.72 0.16 165 / 50%); }
+
+  .sev-critical { color: var(--sev-critical); }
+  .sev-high { color: var(--sev-high); }
+  .sev-medium { color: var(--sev-medium); }
+  .sev-low { color: var(--sev-low); }
+  .sev-info { color: var(--sev-info); }
+  .bg-sev-critical { background-color: var(--sev-critical); }
+  .bg-sev-high { background-color: var(--sev-high); }
+  .bg-sev-medium { background-color: var(--sev-medium); }
+  .bg-sev-low { background-color: var(--sev-low); }
+  .bg-sev-info { background-color: var(--sev-info); }
+
+  .data-pulse {
+    position: relative;
+  }
+  .data-pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 0 oklch(0.72 0.16 165 / 40%);
+    animation: dataPulse 2.4s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes dataPulse {
+    0% { box-shadow: 0 0 0 0 oklch(0.72 0.16 165 / 40%); }
+    70% { box-shadow: 0 0 0 14px oklch(0.72 0.16 165 / 0%); }
+    100% { box-shadow: 0 0 0 0 oklch(0.72 0.16 165 / 0%); }
+  }
+  .breathe {
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .flow-line {
+    stroke-dasharray: 6 10;
+    animation: flowDash 1.6s linear infinite;
+  }
+  @keyframes flowDash {
+    to { stroke-dashoffset: -32; }
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: oklch(0.13 0.02 250); }
+::-webkit-scrollbar-thumb {
+  background: oklch(1 0 0 / 10%);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: oklch(0.72 0.16 165 / 40%); }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .data-pulse::after { animation: none; }
+  .breathe { animation: none; opacity: 0.9; }
+  .flow-line { animation: none; }
+}
