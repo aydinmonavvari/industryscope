@@ -384,16 +384,30 @@ model Testimonial {
 }
 
 model Article {
-  id        String   @id @default(cuid())
-  slug      String   @unique
-  category  String
-  title     String
-  insight   String
-  body      String   // markdown-ish full content
-  stat      String?
-  statLabel String?
-  delta     String?
-  readMins  Int      @default(6)
-  published Boolean  @default(true)
-  createdAt DateTime @default(now())
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  category        String
+  title           String
+  insight         String
+  body            String   // markdown-ish full content
+  stat            String?
+  statLabel       String?
+  delta           String?
+  readMins        Int      @default(6)
+  published       Boolean  @default(true)
+  // SEO fields
+  metaDescription String?
+  keywords        String?  // comma-separated
+  ogImage         String?
+  // cross-links to other Scope products (for SEO)
+  externalLinks   String?  // JSON array of {label, url}
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Key-value editable site content (admin-managed)
+model SiteSetting {
+  key       String   @id
+  value     String   // text or JSON
+  updatedAt DateTime @updatedAt
 }

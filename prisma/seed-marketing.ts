@@ -1,84 +1,121 @@
-// IndustryScope — Seed marketing content: real articles, testimonials, example leads.
+// IndustryScope — Seed marketing content: real articles with SEO + cross-links, testimonials.
 import { db } from '../src/lib/db'
+
+// Ecosystem cross-links (real product domains)
+const ECO = {
+  scopeos: 'https://scopeos.ir',
+  finscope: 'https://finscope.ir',
+  vestascope: 'https://vestascope.ir',
+  healthscope: 'https://healthscope.ir',
+}
 
 const ARTICLES = [
   {
     slug: 'lead-time-volatility-working-capital',
     category: 'Supply Chain',
-    title: 'Why lead-time volatility is the hidden tax on working capital',
-    insight: 'A 14% lead-time swing can lock 9–12% more capital in inventory without raising stockout protection.',
-    stat: '9.2%', statLabel: 'extra capital locked', delta: '+14% lead time', readMins: 8,
-    body: `## Executive Insight
-Lead-time volatility is rarely priced into inventory policy. Most planners set safety stock against a *static* average lead time, then absorb the variance as "operational noise". That noise is not free — it is a quiet, compounding tax on working capital.
+    title: 'چرا نوسان زمان تدارک، مالیات پنهان سرمایهٔ در گردش است',
+    insight: 'یک نوسان ۱۴٪ی زمان تدارک می‌تواند ۹ تا ۱۲ درصد سرمایهٔ بیشتری را بدون افزایش محافظت از اتمام، در موجودی قفل کند.',
+    stat: '۹.۲٪', statLabel: 'سرمایهٔ اضافی قفل‌شده', delta: '+۱۴٪ زمان تدارک', readMins: 8,
+    metaDescription: 'نوسان زمان تدارک تأمین‌کننده، مالیات پنهان سرمایهٔ در گردش است. چگونه با هوش مصنوعی موجودی را به‌ینه کنید و ریسک اتمام را کاهش دهید.',
+    keywords: 'زمان تدارک, سرمایه در گردش, مدیریت موجودی, هوش مصنوعی صنعت, زنجیره تأمین, IndustryScope',
+    body: `## بینش اجرایی
+نوسان زمان تدارک به‌ندرت در سیاست موجودی قیمت‌گذاری می‌شود. بیشتر برنامه‌ریزها موجودی ایمن را بر اساس میانگین *ثابت* زمان تدارک تعیین می‌کنند، سپس واریانس را به‌عنوان «نویز عملیاتی» جذب می‌کنند. این نویز رایگان نیست — مالیاتی پنهان و مرکب بر سرمایهٔ در گردش است.
 
-## The Data
-Across mid-size manufacturers and distributors, a 14% swing in supplier lead time (one standard deviation) forces inventory to absorb an extra 9–12% of capital to hold the same service level. That capital is not productive: it sits in aisles, racks, and buffer zones, waiting for a delay that may or may not arrive.
+## داده‌ها
+در تولیدکنندگان و توزیع‌کنندگان متوسط، یک نوسان ۱۴٪ی زمان تدارک تأمین‌کننده (یک انحراف معیار) موجب می‌شود موجودی ۹ تا ۱۲ درصد سرمایهٔ بیشتری را برای حفظ همان سطح سرویس جذب کند. این سرمایه بهره‌ور نیست: در راهروها، قفسه‌ها و зоны بافر می‌خوابد و منتظر تأخیری است که شاید اصلاً رخ ندهد.
 
-## The Analysis
-The compounding effect is what kills margin:
-- **Buffer layering**: each upstream delay triggers a downstream buffer review; teams add "just in case" stock independently.
-- **Policy lag**: reorder points are recalculated quarterly at best; lead-time drift outpaces the review cycle.
-- **ABC blind spot**: Class C items often get the same buffer policy as Class A, despite very different impact.
+## تحلیل
+اثر مرکب آن چیزی است که حاشیه را نابود می‌کند:
+- **لایه‌گذاری بافر**: هر تأخیر بالادستی، بازبینی بافر پایین‌دست را_trigger می‌کند؛ تیم‌ها مستقل از هم موجودی «فقط‌در‌صورت‌لازم» اضافه می‌کنند.
+- **عقب‌ماندگی سیاست**: نقاط سفارش نهایتاً فصلی محاسبه می‌شوند؛ انحراف زمان تدارک از چرخهٔ بازبینی سریع‌تر است.
+- **نقطه‌کور ABC**: اقلام Class C غالباً همان سیاست بافر Class A را دریافت می‌کنند، با وجود اثر بسیار متفاوت.
 
-## AI Insight
-With IndustryScope, the **Lead-Time Engine** continuously re-baselines supplier lead times and flags drift above a configurable threshold. The recommendation engine proposes *targeted* safety-stock adjustments (not blanket increases) and quantifies the capital cost of *inaction* — so the planner can decide with full economic context.
+## بینش هوش مصنوعی
+در IndustryScope، **موتور زمان تدارک** به‌طور پیوسته زمان تدارک هر تأمین‌کننده را باز‌پایه می‌کند و انحراف بالای آستانهٔ قابل پیکربندی را علامت‌گذاری می‌کند. موتور توصیه، تنظیمات موجودی ایمن *هدفمند* (نه افزایش کلی) پیشنهاد می‌دهد و هزینهٔ سرمایهٔ *بی‌عملیاتی* را کمی می‌کند — تا برنامه‌ریز با زمینهٔ کامل اقتصادی تصمیم بگیرد.
 
-## Recommended Action
-1. Re-baseline lead times per supplier monthly, not quarterly.
-2. Tie safety stock to lead-time variance, not a static average.
-3. Treat Class A and Class C buffer policies separately.
-4. Review the "dead stock is a decision" companion article.`,
+## اقدام پیشنهادی
+۱. زمان تدارک هر تأمین‌کننده را ماهانه (نه فصلی) باز‌پایه کنید.
+۲. موجودی ایمن را به واریانس زمان تدارک گره بزنید، نه به میانگین ثابت.
+۳. سیاست بافر Class A و Class C را جدا نگه دارید.
+
+## مطالعهٔ بیشتر
+- [FinScope](https://finscope.ir) — هوش مالی برای تحلیل هزینهٔ سرمایهٔ در گردش.
+- [ScopeOS](https://scopeos.ir) — پایهٔ مشترک احراز هویت و سازمان‌ها در اکوسیستم Scope.`,
+    externalLinks: JSON.stringify([
+      { label: 'FinScope', url: ECO.finscope },
+      { label: 'ScopeOS', url: ECO.scopeos },
+    ]),
   },
   {
     slug: 'dead-stock-decision',
     category: 'Inventory',
-    title: 'Dead stock is not a number — it is a decision you kept postponing',
-    insight: '67% of overstock at mid-size distributors traces back to 3 untouched reorder policies.',
-    stat: '67%', statLabel: 'policy-driven overstock', delta: '-22% turnover', readMins: 6,
-    body: `## Executive Insight
-Dead stock feels like a number on a balance sheet. It is not. It is the visible residue of postponement — a sequence of small, defensible decisions that compounded into capital you cannot recover.
+    title: 'موجودی راکد یک عدد نیست — تصمیمی است که به تعویق انداختید',
+    insight: '۶۷٪ مازاد موجودی در توزیع‌کنندگان متوسط به تنها ۳ سیاست سفارش لمس‌نشده برمی‌گردد.',
+    stat: '۶۷٪', statLabel: 'مازاد ناشی از سیاست', delta: '-۲۲٪ گردش', readMins: 6,
+    metaDescription: 'موجودی راکد تصمیم به تعویق‌افتاده است، نه یک عدد. ۶۷٪ مازاد به سیاست‌های لمس‌نشده برمی‌گردد. روش تشخیص و اقدام با هوش مصنوعی.',
+    keywords: 'موجودی راکد, مدیریت موجودی, گردش موجودی, هوش مصنوعی انبار, IndustryScope',
+    body: `## بینش اجرایی
+موجودی راکد روی ترازنامه یک عدد به نظر می‌رسد. نیست. این پسماندهٔ قابل‌مشاهدهٔ تعویق است — دنباله‌ای از تصمیم‌های کوچک و قابل‌دفاع که مرکب شد به سرمایه‌ای که نمی‌توانید بازیابی کنید.
 
-## The Data
-In our design-partner cohort, 67% of overstock value traces back to just three untouched reorder policies per organization. The SKUs changed; the policies did not.
+## داده‌ها
+در کوهورت شرکای طراحی ما، ۶۷٪ ارزش مازاد به تنها سه سیاست سفارش لمس‌نشده در هر سازمان برمی‌گردد. SKUها تغییر کردند؛ سیاست‌ها نه.
 
-## The Analysis
-The pattern is remarkably consistent:
-- A demand spike → planner raises the reorder point "temporarily".
-- Demand normalizes → nobody resets the policy.
-- Two quarters later → the SKU is overstocked, expiry risk rises, and the reorder point is still elevated.
+## تحلیل
+الگو به‌طور قابل‌توجهی ثابت است:
+- یک جهش تقاضا → برنامه‌ریز نقطهٔ سفارش را «موقتاً» بالا می‌برد.
+- تقاضا نرمال می‌شود → کسی سیاست را بازنشانی نمی‌کند.
+- دو فصل بعد → SKU مازاد شده، ریسک انقضا بالا می‌رود و نقطهٔ سفارش هنوز بالا است.
 
-## AI Insight
-IndustryScope's **Inventory Intelligence** classifies stock health continuously and surfaces slow-moving and overstock items with the *original policy decision* attached — so you can see not just what is overstocked, but *why*, and who can act.
+## بینش هوش مصنوعی
+هوشمندی موجودی IndustryScope سلامت موجودی را پیوسته طبقه‌بندی می‌کند و اقلام کندمتحرک و مازاد را با *تصمیم سیاست اصلی* پیوست می‌دهد — تا نه‌تنها ببینید چه مازاد است، بلکه *چرا* و چه کسی می‌تواند اقدام کند.
 
-## Recommended Action
-1. Tag every reorder-point change with an owner and a review date.
-2. Auto-flag policies older than 90 days without review.
-3. Discount-reallocate or reduce the next PO for confirmed dead stock.`,
+## اقدام پیشنهادی
+۱. هر تغییر نقطهٔ سفارش را با مالک و تاریخ بازبینی برچسب‌گذاری کنید.
+۲. سیاست‌های قدیمی‌تر از ۹۰ روز بدون بازبینی را خودکار علامت‌گذاری کنید.
+۳. برای موجودی راکد تأییدشده، تخفیف-تخصیص مجدد یا کاهش سفارش بعدی.
+
+## مطالعهٔ بیشتر
+- [Vestascope](https://vestascope.ir) — هوش کالا برای تحلیل چرخش موجودی.
+- [ScopeOS](https://scopeos.ir) — پایهٔ مشترک اکوسیستم Scope.`,
+    externalLinks: JSON.stringify([
+      { label: 'Vestascope', url: ECO.vestascope },
+      { label: 'ScopeOS', url: ECO.scopeos },
+    ]),
   },
   {
     slug: 'otif-system-property',
     category: 'Logistics',
-    title: 'OTIF is a system property, not a carrier scorecard',
-    insight: 'Carriers explain only ~30% of OTIF variance; upstream planning explains the rest.',
-    stat: '70%', statLabel: 'planning-driven', delta: '+8 pts OTIF', readMins: 7,
-    body: `## Executive Insight
-On-Time-in-Full (OTIF) is the most-measured and most-misattributed metric in logistics. When it slips, the reflex is to blame the carrier. The data rarely supports that.
+    title: 'OTIF ویژگی سیستم است، نه کارت امتیاز ترازنما',
+    insight: 'ترازنماها تنها حدود ۳۰٪ واریانس OTIF را توضیح می‌دهند؛ بقیه به برنامه‌ریزی بالادستی برمی‌گردد.',
+    stat: '۷۰٪', statLabel: 'ناشی از برنامه‌ریزی', delta: '+۸ نقطه OTIF', readMins: 7,
+    metaDescription: 'OTIF ویژگی سیستم است نه ترازنما. ۷۰٪ واریانس به برنامه‌ریزی بالادستی برمی‌گردد. روش تجزیه و بهبود با برج کنترل لجستیک هوشمند.',
+    keywords: 'OTIF, لجستیک, تحویل به‌موقع, برج کنترل, هوش مصنوعی لجستیک, IndustryScope',
+    body: `## بینش اجرایی
+تحویل به‌موقع-کامل (OTIF) پراندازه‌گیری‌ترین و پرنسبت‌دهی‌اشتباه‌ترین معیار لجستیک است. وقتی افت می‌کند، واکنش反射ی سرزنان ترازنماست. داده‌ها به‌ندرت از این دفاع می‌کنند.
 
-## The Data
-Across mixed-mode distribution, carriers explain roughly 30% of OTIF variance. The remaining 70% is upstream: forecast accuracy, order release timing, pick readiness, and dock scheduling.
+## داده‌ها
+در توزیع حالت‌مختلط، ترازنماها حدود ۳۰٪ واریانس OTIF را توضیح می‌دهند. ۷۰٪ باقی‌مانده بالادستی است: دقت پیش‌بینی، زمان آزادسازی سفارش، آمادگی برداشت و زمان‌بندی داک.
 
-## The Analysis
-Blaming carriers for planning-driven misses leads to two failure modes:
-- **Carrier churn** that does not fix the root cause.
-- **Incentive misalignment** — carriers hide upstream issues to protect their scorecard.
+## تحلیل
+مقصر دانستن ترازنما برای خطاهای ناشی از برنامه‌ریزی به دو حالت شکست منجر می‌شود:
+- **تغییر ترازنما** که علت ریشه‌ای را حل نمی‌کند.
+- **عدم‌هماهنگی انگیزه** — ترازنماها مشکلات بالادستی را برای محافظت از کارت امتیاز خود پنهان می‌کنند.
 
-## AI Insight
-IndustryScope's **Logistics Control Tower** decomposes OTIF into carrier-attributable vs planning-attributable variance, so you negotiate with carriers from a position of evidence and fix planning where the evidence points.
+## بینش هوش مصنوعی
+برج کنترل لجستیک IndustryScope، OTIF را به واریانس قابل‌نسبت‌دهی به ترازنما در مقابل قابل‌نسبت‌دهی به برنامه‌ریزی تجزیه می‌کند، تا با شواهد با ترازنما مذاکره کنید و برنامه‌ریزی را آن‌جا که شواهد اشاره می‌کنند اصلاح کنید.
 
-## Recommended Action
-1. Decompose OTIF misses by cause (carrier, planning, dock, pick).
-2. Negotiate carrier SLAs only on carrier-attributable variance.
-3. Feed planning misses back into the demand and release cycle.`,
+## اقدام پیشنهادی
+۱. خطاهای OTIF را بر اساس علت (ترازنما، برنامه‌ریزی، داک، برداشت) تجزیه کنید.
+۲. SLA ترازنما را فقط بر واریانس قابل‌نسبت‌دهی به ترازنما مذاکره کنید.
+۳. خطاهای برنامه‌ریزی را به چرخهٔ تقاضا و آزادسازی بازخورید.
+
+## مطالعهٔ بیشتر
+- [HealthScope](https://healthscope.ir) — هوش عملیاتی برای لجستیک سلامت.
+- [ScopeOS](https://scopeos.ir) — پایهٔ مشترک اکوسیستم Scope.`,
+    externalLinks: JSON.stringify([
+      { label: 'HealthScope', url: ECO.healthscope },
+      { label: 'ScopeOS', url: ECO.scopeos },
+    ]),
   },
 ]
 
@@ -87,27 +124,23 @@ const TESTIMONIALS = [
     name: 'Mohammad Reza Karimi',
     role: 'Operations Director',
     company: 'Pars Industrial Group',
-    quote: 'IndustryScope became our daily operations briefing in two weeks. We caught a stockout three days before it would have stopped a production line.',
+    quote: 'IndustryScope در دو هفته به Briefing روزانهٔ عملیات ما تبدیل شد. یک اتمام موجودی را سه روز پیش از توقف خط تولید تشخیص دادیم.',
     rating: 5,
   },
   {
     name: 'Sara Mohseni',
     role: 'Supply Chain Manager',
     company: 'Gulf Distribution Co.',
-    quote: 'The risk matrix finally let me show the board *why* a supplier decision mattered, with numbers — not gut feel.',
+    quote: 'ماتریس ریسک بالاخره به من اجازه داد به هیئت‌مدیره نشان دهم *چرا* یک تصمیم تأمین‌کننده مهم بود — با عدد، نه حس.',
     rating: 5,
   },
   {
     name: 'Arman Tehrani',
     role: 'Warehouse Manager',
     company: 'Qom Logistics Hub',
-    quote: 'Dead-stock detection paid for the pilot in the first quarter. The movement ledger alone changed how our team thinks about adjustments.',
+    quote: 'تشخیص موجودی راکد، هزینهٔ پایلوت را در همان فصل اول جبران کرد. دفتر جابجایی به‌تنهایی نگاه تیم به تعدیل‌ها را تغییر داد.',
     rating: 5,
   },
-]
-
-const EXAMPLE_LEADS = [
-  { type: 'contact', name: 'Demo Lead — remove in production', email: 'demo@example.com', phone: '0000000000', company: 'Example Co.', message: 'This is a seeded example lead. Real submissions from the website will appear here.', status: 'new' },
 ]
 
 async function main() {
@@ -123,10 +156,7 @@ async function main() {
   for (const t of TESTIMONIALS) {
     await db.testimonial.create({ data: { ...t, published: true } })
   }
-  for (const l of EXAMPLE_LEADS) {
-    await db.lead.create({ data: l })
-  }
-  console.log(`Seeded ${ARTICLES.length} articles, ${TESTIMONIALS.length} testimonials, ${EXAMPLE_LEADS.length} example leads.`)
+  console.log(`Seeded ${ARTICLES.length} articles (with SEO + cross-links), ${TESTIMONIALS.length} testimonials.`)
 }
 
 main().catch((e) => { console.error(e); process.exit(1) }).finally(async () => { await db.$disconnect() })

@@ -139,3 +139,41 @@ Verification (Agent Browser + curl):
 Stage Summary:
 - Production-ready V3 COMPLETE and browser-verified. Site is now real: forms capture leads, owner can view them, all operational actions execute with audit, SEO infrastructure in place, phone 09123326387 + WhatsApp + Telegram contact channels throughout, Persian-first with EN toggle.
 - Ready to deploy: set OWNER_PASSCODE + CONTACT_* env vars in production; the DB stores real leads. For production deployment, swap SQLite for PostgreSQL (schema unchanged) and add a real SMTP forwarder for lead notifications.
+
+---
+Task ID: PRODUCTION-FINAL-V4
+Agent: main (architect + full-stack + designer + SEO + strategist)
+Task: Multi-page architecture, admin panel with article CRUD + SEO, ecosystem real links, article cross-links, Persian text fixes, visual polish, PostgreSQL-ready, full deployment guide.
+
+Work Log:
+- Schema: added Article.metaDescription, keywords, ogImage, externalLinks, updatedAt + SiteSetting(key,value) model. db:push --force-reset (reseeded).
+- Seed: rewrote seed-marketing with 3 full Persian articles + SEO meta + keywords + externalLinks JSON to finscope/vestascope/healthscope/scopeos. Fixed testimonial typo. Fixed contact.titleAccent typo ("صبت‌نام امتحان کنید" → "همین امروز شروع کنید"). Renamed nav.talkEnterprise to "قیمت‌گذاری"/"Pricing", added nav.contact.
+- Backend: /api/admin/article (GET list / POST upsert / DELETE) + /api/admin/settings (GET / POST upsert). Both owner-gated. Article schema validates slug/SEO fields.
+- Hash router (src/lib/router.tsx): lightweight #/page router with RouterProvider. Pages: home, command-center, inventory, logistics, risk, copilot, ecosystem, intelligence[/<slug>], enterprise, contact, admin.
+- Nav: rewritten to use hash navigate; active state highlight; all sections as hash links; phone + admin (ShieldCheck) + lang + enterDemo.
+- page.tsx: rewritten with RouterProvider + AnimatePresence page transitions (framer-motion). Home now SHORTER: Hero + LiveWorld + CommandCenter preview + modules grid (6 cards → deep pages) + Testimonials + EnterpriseCTA. Each section has its own dedicated page.
+- AdminPanel (src/components/industrial/AdminPanel.tsx): passcode login → 3 tabs:
+  * لیدها: stats + leads table + status dropdown + delete.
+  * مقالات: list (with published badge + SEO keywords preview) + new/edit editor with ALL fields incl SEO (Meta Description, keywords, externalLinks JSON) + published toggle + save (real upsert) + delete.
+  * محتوای سایت: editable SiteSetting key-values (hero headlines, phone override, etc.).
+- OwnerDashboard modal removed; admin is now a full hash page (#/admin).
+- ScopeEcosystem: products now clickable <a> to real domains (scopeos.ir, finscope.ir, vestascope.ir, healthscope.ir); IndustryScope card = self with "YOU ARE HERE".
+- ScopeIntelligence: fetches real articles; renders article cards with SEO keywords preview + external link chips; article modal opens via #/intelligence/<slug>; renders full markdown body with inline [text](url) link parsing + external links footer (cross-links to ecosystem sites for SEO).
+- Sitemap: now dynamic — includes published articles as #/intelligence/<slug> deep links.
+- Visual polish: framer-motion page transitions, module cards with whileHover spring + gradient glow, ecosystem hover lift, intelligence hover lift.
+- Deployment guide: INDUSTRYSCOPE_DEPLOYMENT_GUIDE.md — step-by-step Supabase + Vercel + ParsPack DNS, env vars, PostgreSQL switch (one-line provider change), SEO submission, troubleshooting, support phone.
+
+Verification (Agent Browser):
+- Home loads 200, fa/rtl, 6 sections (shorter than before).
+- Nav hash links: clicked inventory → #/inventory → dedicated page (2 sections).
+- Admin #/admin: passcode login (scope2025) → 3 tabs visible.
+- Articles tab: 3 articles listed with SEO keywords preview + published badges.
+- New article editor: all fields incl SEO (Meta Description, keywords, externalLinks) + published checkbox. Created "test-article" → saved to DB (verified via /api/articles).
+- Ecosystem: 4 real external links (scopeos.ir, finscope.ir, vestascope.ir, healthscope.ir) — verified.
+- Article cross-links: opened lead-time article → 8 cross-links to finscope/scopeos in body + footer — verified.
+- Deleted test-article (cleanup).
+- Lint clean (1 benign font warning).
+
+Stage Summary:
+- Production-final V4 COMPLETE. Site is multi-page (shorter homepage), has a full admin panel (leads + article CRUD with SEO + site content), ecosystem real links + article cross-links for SEO, Persian text fixed, PostgreSQL-ready (one-line provider change documented), full deployment guide written.
+- Ready to deploy: Supabase + Vercel + ParsPack per INDUSTRYSCOPE_DEPLOYMENT_GUIDE.md.

@@ -19,8 +19,9 @@ export const dict = {
       copilot: 'دستیار هوش مصنوعی',
       ecosystem: 'اکوسیستم',
       intelligence: 'هوش',
-      talkEnterprise: 'تماس با تیم سازمانی',
+      talkEnterprise: 'قیمت‌گذاری',
       enterDemo: 'ورود به دموی زنده',
+      contact: 'تماس',
     },
     hero: {
       tagline: 'سیستم‌عامل هوش مصنوعی برای صنعت و زنجیره تأمین',
@@ -251,8 +252,8 @@ export const dict = {
     contact: {
       eyebrow: 'تماس با ما',
       title: 'بیایید IndustryScope شما را بسازیم.',
-      titleAccent: 'صبت‌نام امتحان کنید',
-      desc: 'آماده‌اید عملیاتیات خود را به یک لایهٔ هوشمند متصل کنید؟ تیم ما در ۲۴ ساعت کاری پاسخ می‌دهد. جلسهٔ دمو رایگان است.',
+      titleAccent: 'همین امروز شروع کنید',
+      desc: 'آماده‌اید عملیاتیات خود را به یک لایهٔ هوشمند متصل کنید؟ تیم ما در یک روز کاری پاسخ می‌دهد. جلسهٔ دمو رایگان است.',
       phoneLabel: 'تلفن تماس',
       emailLabel: 'ایمیل',
       addressLabel: 'آدرس',
@@ -319,7 +320,8 @@ export const dict = {
     nav: {
       platform: 'Platform', commandCenter: 'Command Center', inventory: 'Inventory',
       logistics: 'Logistics', risk: 'Risk', copilot: 'AI Copilot', ecosystem: 'Ecosystem',
-      intelligence: 'Intelligence', talkEnterprise: 'Talk to Enterprise', enterDemo: 'Enter Live Demo',
+      intelligence: 'Intelligence', talkEnterprise: 'Pricing', enterDemo: 'Enter Live Demo',
+      contact: 'Contact',
     },
     hero: {
       tagline: 'AI Operating System for Industry & Supply Chain',
