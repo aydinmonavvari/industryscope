@@ -56,3 +56,4 @@ server.log
 # local database
 db/*.db
 *.db
+bun.lock
