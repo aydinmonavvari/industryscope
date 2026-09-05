@@ -2,20 +2,11 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Menu, X, Hexagon, ArrowRight } from 'lucide-react'
-
-const LINKS = [
-  { id: 'platform', label: 'Platform' },
-  { id: 'command-center', label: 'Command Center' },
-  { id: 'inventory', label: 'Inventory' },
-  { id: 'logistics', label: 'Logistics' },
-  { id: 'risk', label: 'Risk' },
-  { id: 'copilot', label: 'AI Copilot' },
-  { id: 'ecosystem', label: 'Ecosystem' },
-  { id: 'intelligence', label: 'Intelligence' },
-]
+import { Menu, X, Hexagon, ArrowRight, Languages } from 'lucide-react'
+import { useI18n } from '@/lib/i18n'
 
 export default function Nav({ onEnterDemo }: { onEnterDemo: () => void }) {
+  const { t, toggle, lang } = useI18n()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
@@ -29,6 +20,17 @@ export default function Nav({ onEnterDemo }: { onEnterDemo: () => void }) {
     const el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  const LINKS = [
+    { id: 'platform', label: t.nav.platform },
+    { id: 'command-center', label: t.nav.commandCenter },
+    { id: 'inventory', label: t.nav.inventory },
+    { id: 'logistics', label: t.nav.logistics },
+    { id: 'risk', label: t.nav.risk },
+    { id: 'copilot', label: t.nav.copilot },
+    { id: 'ecosystem', label: t.nav.ecosystem },
+    { id: 'intelligence', label: t.nav.intelligence },
+  ]
 
   return (
     <header className={cn('sticky top-0 z-50 transition-all', scrolled ? 'glass-strong border-b border-border/60' : 'border-b border-transparent')}>
@@ -53,15 +55,29 @@ export default function Nav({ onEnterDemo }: { onEnterDemo: () => void }) {
         </nav>
 
         <div className="hidden lg:flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={() => scrollTo('enterprise')} className="text-muted-foreground">Talk to Enterprise</Button>
+          {/* Language switcher: فارسی | EN */}
+          <button
+            onClick={toggle}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md glass text-sm hover:bg-foreground/5 transition-colors"
+            aria-label="Switch language"
+          >
+            <Languages className="h-4 w-4 text-emerald-accent" />
+            <span className="font-semibold">{lang === 'fa' ? 'EN' : 'فارسی'}</span>
+          </button>
+          <Button variant="ghost" size="sm" onClick={() => scrollTo('enterprise')} className="text-muted-foreground">{t.nav.talkEnterprise}</Button>
           <Button size="sm" onClick={onEnterDemo} className="bg-primary text-primary-foreground hover:bg-primary/90">
-            Enter Live Demo <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            {t.nav.enterDemo} <ArrowRight className="ml-1.5 h-3.5 w-3.5 rtl-flip" />
           </Button>
         </div>
 
-        <button className="lg:hidden p-2" onClick={() => setOpen(v => !v)} aria-label="Toggle menu">
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="lg:hidden flex items-center gap-1">
+          <button onClick={toggle} className="p-2 rounded-md glass" aria-label="Switch language">
+            <Languages className="h-5 w-5 text-emerald-accent" />
+          </button>
+          <button className="p-2" onClick={() => setOpen(v => !v)} aria-label="Toggle menu">
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -75,7 +91,7 @@ export default function Nav({ onEnterDemo }: { onEnterDemo: () => void }) {
               </button>
             ))}
             <Button size="sm" onClick={() => { setOpen(false); onEnterDemo() }} className="w-full mt-2 bg-primary text-primary-foreground">
-              Enter Live Demo <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              {t.nav.enterDemo} <ArrowRight className="ml-1.5 h-3.5 w-3.5 rtl-flip" />
             </Button>
           </div>
         </div>

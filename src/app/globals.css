@@ -115,6 +115,23 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  /* Persian-first typography */
+  html[lang="fa"] body,
+  html[lang="fa"] input,
+  html[lang="fa"] textarea,
+  html[lang="fa"] button {
+    font-family: 'Vazirmatn', var(--font-geist-sans), system-ui, sans-serif;
+  }
+  html[lang="en"] body,
+  html[lang="en"] input,
+  html[lang="en"] textarea,
+  html[lang="en"] button {
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+  }
+  /* Numeric tabular alignment stays good in both */
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+  /* RTL-aware helpers */
+  html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 }
 
 /* Industrial utilities */

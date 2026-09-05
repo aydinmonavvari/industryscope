@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { ShieldAlert, TrendingDown, Activity, Brain } from 'lucide-react'
 import { SeverityBadge, SectionHeading, SectionShell } from './shared'
+import { useI18n } from '@/lib/i18n'
 
 type Risk = {
   id: string; dimension: string; title: string; severity: string
@@ -15,12 +16,9 @@ type Supplier = {
 }
 type Resp = { risks: Risk[]; suppliers: Supplier[] }
 
-const DIM_LABEL: Record<string, string> = {
-  inventory: 'Inventory', shipment: 'Shipment', supplier: 'Supplier',
-  lead_time: 'Lead Time', demand: 'Demand', production: 'Production',
-}
-
 export default function SupplyChainRisk() {
+  const { t, lang } = useI18n()
+  const rk = t.risk
   const [data, setData] = useState<Resp | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -38,36 +36,36 @@ export default function SupplyChainRisk() {
   return (
     <SectionShell id="risk">
       <SectionHeading
-        eyebrow="Supply Chain Risk Engine"
-        title={<>Probability × Impact × Urgency. <span className="text-emerald-accent">Prioritized.</span></>}
-        description="Multi-dimensional risk scoring — supplier, inventory, shipment, lead time, demand, production. Every risk carries a recommended action and a confidence band."
+        eyebrow={rk.eyebrow}
+        title={<>{rk.title}<span className="text-emerald-accent">{rk.titleAccent}</span></>}
+        description={rk.desc}
       />
 
       {loading ? (
-        <div className="py-16 text-center text-sm text-muted-foreground flex items-center justify-center gap-2"><span className="h-2 w-2 rounded-full bg-primary breathe" /> Computing risk exposure…</div>
+        <div className="py-16 text-center text-sm text-muted-foreground flex items-center justify-center gap-2"><span className="h-2 w-2 rounded-full bg-primary breathe" /> {lang === 'fa' ? 'محاسبهٔ مواجههٔ ریسک…' : 'Computing risk exposure…'}</div>
       ) : data ? (
         <div className="mt-6 grid lg:grid-cols-5 gap-4">
           {/* Risk matrix */}
           <Card className="glass rounded-2xl p-4 sm:p-5 lg:col-span-3">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold flex items-center gap-2"><ShieldAlert className="h-4 w-4 text-sev-high" /> Risk Matrix</h3>
-              <span className="text-xs text-muted-foreground font-mono">{data.risks.length} risks</span>
+              <h3 className="font-semibold flex items-center gap-2"><ShieldAlert className="h-4 w-4 text-sev-high" /> {rk.matrix}</h3>
+              <span className="text-xs text-muted-foreground font-mono">{data.risks.length} {lang === 'fa' ? 'ریسک' : 'risks'}</span>
             </div>
             <div className="relative aspect-square max-w-md mx-auto">
               <RiskMatrix risks={data.risks} />
             </div>
             <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-muted-foreground">
-              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-sev-critical" /> Critical</span>
-              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-sev-high" /> High</span>
-              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-sev-medium" /> Medium</span>
-              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-sev-low" /> Low</span>
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-sev-critical" /> {t.commandCenter.critical}</span>
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-sev-high" /> {t.commandCenter.high}</span>
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-sev-medium" /> {t.commandCenter.medium}</span>
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-sev-low" /> {t.commandCenter.low}</span>
             </div>
           </Card>
 
           {/* Supplier performance */}
           <Card className="glass rounded-2xl p-4 sm:p-5 lg:col-span-2">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold flex items-center gap-2"><TrendingDown className="h-4 w-4 text-sev-high" /> Supplier Performance</h3>
+              <h3 className="font-semibold flex items-center gap-2"><TrendingDown className="h-4 w-4 text-sev-high" /> {rk.supplierPerf}</h3>
             </div>
             <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
               {data.suppliers.map(s => (
@@ -77,15 +75,15 @@ export default function SupplyChainRisk() {
                     <span className="text-[10px] font-mono text-muted-foreground">{s.country}</span>
                   </div>
                   <div className="mt-2 grid grid-cols-3 gap-2 text-[11px]">
-                    <Metric label="On-time" value={`${Math.round(s.onTimeRate * 100)}%`} good={s.onTimeRate >= 0.85} />
-                    <Metric label="Lead" value={`${s.avgLeadDays}d`} good={s.avgLeadDays <= 20} />
-                    <Metric label="Defect" value={`${(s.defectRate * 100).toFixed(1)}%`} good={s.defectRate <= 0.02} />
+                    <Metric label={rk.onTime} value={`${Math.round(s.onTimeRate * 100)}%`} good={s.onTimeRate >= 0.85} />
+                    <Metric label={rk.lead} value={`${s.avgLeadDays}${lang === 'fa' ? '' : 'd'}`} good={s.avgLeadDays <= 20} />
+                    <Metric label={rk.defect} value={`${(s.defectRate * 100).toFixed(1)}%`} good={s.defectRate <= 0.02} />
                   </div>
                   <div className="mt-2 flex items-center gap-2">
                     <div className="flex-1 h-1.5 rounded-full bg-foreground/10 overflow-hidden">
                       <div className={cn('h-full rounded-full', s.riskScore > 0.5 ? 'bg-sev-critical' : s.riskScore > 0.2 ? 'bg-sev-high' : 'bg-primary')} style={{ width: `${Math.min(100, s.riskScore * 100)}%` }} />
                     </div>
-                    <span className="text-[10px] font-mono text-muted-foreground">risk {s.riskScore}</span>
+                    <span className="text-[10px] font-mono text-muted-foreground">{rk.risk} {s.riskScore}</span>
                   </div>
                 </div>
               ))}
@@ -94,22 +92,22 @@ export default function SupplyChainRisk() {
 
           {/* Risk detail list */}
           <Card className="glass rounded-2xl p-4 sm:p-5 lg:col-span-5">
-            <h3 className="font-semibold flex items-center gap-2 mb-3"><Activity className="h-4 w-4 text-emerald-accent" /> Active Risks — ranked</h3>
+            <h3 className="font-semibold flex items-center gap-2 mb-3"><Activity className="h-4 w-4 text-emerald-accent" /> {rk.activeRisks}</h3>
             <div className="grid md:grid-cols-2 gap-3">
               {data.risks.map(r => (
                 <div key={r.id} className="rounded-lg border border-border/40 bg-foreground/[0.02] p-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{DIM_LABEL[r.dimension] ?? r.dimension}</span>
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{(rk.dims as Record<string, string>)[r.dimension] ?? r.dimension}</span>
                       <div className="text-sm font-medium">{r.title}</div>
                     </div>
                     <SeverityBadge severity={r.severity} />
                   </div>
                   <div className="mt-2 flex items-center gap-3 text-[11px] font-mono text-muted-foreground">
-                    <span>P {Math.round(r.probability * 100)}%</span>
-                    <span>I {Math.round(r.impact * 100)}%</span>
-                    <span>Score <span className="text-emerald-accent">{r.score}</span></span>
-                    <span>Conf {Math.round(r.confidence * 100)}%</span>
+                    <span>{rk.prob} {Math.round(r.probability * 100)}%</span>
+                    <span>{rk.impact} {Math.round(r.impact * 100)}%</span>
+                    <span>{rk.score} <span className="text-emerald-accent">{r.score}</span></span>
+                    <span>{rk.conf} {Math.round(r.confidence * 100)}%</span>
                   </div>
                   {r.recommendation && (
                     <div className="mt-2 pt-2 border-t border-border/30 text-xs flex items-start gap-1.5">

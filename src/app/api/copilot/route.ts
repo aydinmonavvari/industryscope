@@ -60,6 +60,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}))
     const question: string = (body.question ?? '').toString().trim()
+    const lang: 'fa' | 'en' = body.lang === 'en' ? 'en' : 'fa'
     if (!question) return NextResponse.json({ error: 'question required' }, { status: 400 })
 
     const orgId = await getDemoOrgId()
@@ -85,7 +86,11 @@ export async function POST(req: Request) {
       return `TOOL ${tool} RESULT:\n${JSON.stringify(data).slice(0, 4000)}`
     }).join('\n\n')
 
-    const userPrompt = `Question from the operations executive:\n"${question}"\n\n--- DATA FROM TOOLS (authoritative; reason ONLY over this) ---\n${contextForModel}\n\nAnswer using the rules in your system instructions. Cite source tools. Distinguish observed vs prediction vs recommendation. If proposing an action, state autonomy level required.`
+    const langInstruction = lang === 'fa'
+      ? `\n\nIMPORTANT: Respond in natural, professional Iranian Persian (فارسی). Keep the brand wordmark "INDUSTRYSCOPE", tool names (e.g. get_inventory), SKU codes, shipment references, and unit symbols in their original form. Use Persian numerals where natural. Structure your answer with clear sections (e.g. داده‌های مشاهده‌شده، پیش‌بینی، توصیه).`
+      : `\n\nRespond in professional English.`
+
+    const userPrompt = `Question from the operations executive:\n"${question}"\n\n--- DATA FROM TOOLS (authoritative; reason ONLY over this) ---\n${contextForModel}\n\nAnswer using the rules in your system instructions. Cite source tools. Distinguish observed vs prediction vs recommendation. If proposing an action, state autonomy level required.${langInstruction}`
 
     // 3) Call the LLM
     const zai = await ZAI.create()

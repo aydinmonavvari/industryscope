@@ -57,3 +57,35 @@ Stage Summary:
 - Frontend: single-page experience at / combining marketing (3D hero, ecosystem, intelligence, enterprise) + interactive product demo (command center, inventory, logistics, risk, AI copilot).
 - Stack honored: Next.js 16, TS5, Tailwind 4, shadcn/ui, Prisma/SQLite, zod, framer-motion, R3F/three. No fake "production-ready" claims — labeled as prototype/demo throughout.
 - Known limitation: SQLite (no DB-level RLS) — tenant isolation is application-layer; acceptable for MVP per environment constraints. Single demo organization seeded.
+
+---
+Task ID: CINEMATIC-V2
+Agent: main (architect)
+Task: Build cinematic industrial entrance (scroll-driven 3D truck → warehouse → intelligence → network) + Persian-first i18n with EN toggle, preserving all existing sections.
+
+Work Log:
+- i18n: created src/lib/i18n.tsx — comprehensive fa/en dictionary covering nav, hero, liveWorld, commandCenter, inventory, logistics, risk, copilot, ecosystem, intelligence, enterprise, footer. External-store provider via useSyncExternalStore (hydration-safe: SSR fa, reconcile persisted lang after mount). Persisted to localStorage.
+- layout: default lang="fa" dir="rtl"; loaded Vazirmatn (Google Fonts link) for Persian, Geist for English; CSS scopes font-family by html[lang].
+- Cinematic 3D (src/components/industrial/CinematicHero3D.tsx): scroll-driven R3F scene with keyframed camera (8 keyframes) + truck x-position + wheel rotation + suspension bob + contact shadow. Road with lane markings, horizon building silhouettes, warehouse (walls/roof/beams/racks/conveyor/forklift/pallets/machine), instanced inventory boxes (60), spatial data overlays via drei Html (WAREHOUSE A / SKU-2048 / SHIPMENT #1842 / Machine M-204) activated by scroll, network nodes pull-back view, fog + cinematic lighting (emerald intelligence point-light grows with scroll). Brand wordmark "INDUSTRYSCOPE" on container both sides via drei Text.
+- 2D fallback (CinematicHero2D.tsx): static SVG cinematic composition (road, truck with INDUSTRYSCOPE branding, warehouse, intelligence overlay) — used for reduced-motion / WebGL-fail / off-screen.
+- Hero wrapper (Hero.tsx): 760vh scroll container + sticky canvas; useScrollProgress (rAF-throttled, module ref, no re-renders); WebGL detection via useSyncExternalStore (respects reduced-motion); one-way downgrade (IntersectionObserver latches 3D→2D once scrolled past, never remounts 3D — avoids WebGL context-lost churn); Cinematic3DErrorBoundary wraps the 3D canvas so any WebGL failure falls back to 2D (never a raw error screen); localized progressive copy overlays via direct-DOM rAF (no React re-renders): eyebrow + wordmark → headline → subhead → supporting → CTAs; scene-state label; scroll hint; progress bar; seamless handoff fade → page background at p→1.
+- Localized all existing sections (Nav with فارسی|EN switcher, LiveWorld, CommandCenter, Inventory, Logistics, Risk, Copilot, Ecosystem, Intelligence, Enterprise, Footer) to use the i18n dictionary; kept operational data (SKU codes, shipment refs, alert titles) as-is.
+- Copilot API (/api/copilot): accepts lang in body; system prompt instructs natural Iranian Persian with Persian numerals for fa, keeps brand wordmark / tool names / SKU codes in original form. Verified: fa answer returns داده‌های مشاهده‌شده، ریسک‌های شناسایی‌شده، توصیه with get_command_center citation.
+- Bug fixed: AiCopilot rendered `{t}` (the i18n dictionary object) instead of `{to}` (tool name) in the tools-citation map → "Objects are not valid as a React child" client-side error. Fixed to `{to}`.
+- Performance: 3D canvas unmounts (→ 2D placeholder) once hero scrolls out of view, freeing the main thread for the rest of the page (copilot, etc.). DPR capped [1,1.5]. Three.js lazy-loaded.
+- Accessibility: semantic content in HTML (not solely WebGL); reduced-motion → 2D fallback; WebGL-fail → 2D fallback + error boundary; RTL-aware (rtl-flip utility, ← / → direction-aware arrows, dir on overlays).
+
+Verification (Agent Browser):
+- Desktop: page loads 200, no errors, fa/rtl default, 11 h2 sections render, Persian brand copy (کل عملیات / هر سیگنال / IndustryScope داده) reveals progressively in warehouse phase, truck + road + lane markings render in 3D (VLM-confirmed).
+- Language switch: EN button toggles to en/ltr with English nav + hero copy + command center "Good morning" / "things need your attention"; back to fa/rtl with "صبح بخیر" / "بحرانی". Persisted across reload.
+- Copilot: fa suggestion → real LLM Persian answer with get_command_center citation, مشاهده/توصی/پیش‌بینی sections, no application error. EN suggestion → English answer with get_low_stock citation.
+- Existing sections: command center alerts expand + acknowledge; inventory Stockout filter returns rows; logistics shipment selection updates detail panel; risk matrix renders; all localized.
+- Mobile (iPhone 15): fa/rtl, language switcher + hamburger menu with fa nav links, cinematic scrolls without error, footer at bottom.
+- Sticky footer: at absolute bottom on both desktop (scrollY=maxScroll) and mobile.
+- Lint: clean (1 benign font warning).
+
+Stage Summary:
+- Cinematic V2 COMPLETE and browser-verified.
+- New: scroll-driven cinematic 3D industrial world (truck → warehouse → intelligence → network → command center handoff), Persian-first i18n with EN toggle, Vazirmatn font, RTL/LTR, 2D/reduced-motion/error-boundary fallbacks, performance via in-view 3D unmount.
+- Preserved: all existing sections (Command Center, Inventory, Logistics, Risk, Copilot, Ecosystem, Intelligence, Enterprise, Footer) — now localized.
+- Known limitation: headless-browser WebGL context loss on rapid remount is mitigated by one-way 3D→2D downgrade + error boundary; real users on real GPUs won't hit this.

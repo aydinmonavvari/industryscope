@@ -6,21 +6,22 @@ import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { Brain, Send, Sparkles, ShieldCheck, Wrench, Loader2, User, Bot, AlertCircle } from 'lucide-react'
 import { SectionHeading, SectionShell } from './shared'
+import { useI18n } from '@/lib/i18n'
 
 type Msg = { role: 'user' | 'assistant'; content: string; tools?: string[]; confidence?: number; autonomy?: number; freshness?: string }
 
-const SUGGESTIONS = [
-  'Which products may stock out and what should I do?',
-  'Why is my inventory capital so high?',
-  'Which shipments are at risk of delay?',
-  'Which supplier is underperforming and why?',
-  'What needs my attention today?',
-]
-
 export default function AiCopilot() {
+  const { t, lang } = useI18n()
+  const cp = t.copilot
+  const suggestions = cp.suggestions
+  const trustIcons = [
+    <ShieldCheck key="i1" className="h-4 w-4" />,
+    <Sparkles key="i2" className="h-4 w-4" />,
+    <Wrench key="i3" className="h-4 w-4" />,
+  ]
   const [messages, setMessages] = useState<Msg[]>([{
     role: 'assistant',
-    content: "I'm IndustryScope AI — your operational intelligence copilot. I reason only over your connected operational data through a controlled tool registry, so every fact I cite is sourced. Ask me what needs your attention, what may stock out, or what to do next.",
+    content: cp.welcome,
     tools: [],
     confidence: 1,
   }])
@@ -43,7 +44,7 @@ export default function AiCopilot() {
     try {
       const r = await fetch('/api/copilot', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q }),
+        body: JSON.stringify({ question: q, lang }),
       })
       if (!r.ok) throw new Error('request failed')
       const d = await r.json()
@@ -52,16 +53,16 @@ export default function AiCopilot() {
       }])
     } catch (e) {
       setError(e instanceof Error ? e.message : 'unknown')
-      setMessages(m => [...m, { role: 'assistant', content: "I couldn't reach the intelligence layer right now. Please retry. (This is shown instead of fabricating an answer.)" }])
+      setMessages(m => [...m, { role: 'assistant', content: cp.cantReach }])
     } finally { setLoading(false) }
   }
 
   return (
     <SectionShell id="copilot">
       <SectionHeading
-        eyebrow="AI Copilot"
-        title={<>Ask your operation a question. <span className="text-emerald-accent">Get a sourced answer.</span></>}
-        description="IndustryScope AI never invents operational facts. It reasons over structured tool results, labels observations vs predictions vs recommendations, and requires human approval before any sensitive action."
+        eyebrow={cp.eyebrow}
+        title={<>{cp.title}<span className="text-emerald-accent">{cp.titleAccent}</span></>}
+        description={cp.desc}
       />
 
       <Card className="glass-strong mt-6 rounded-2xl overflow-hidden">
@@ -73,15 +74,15 @@ export default function AiCopilot() {
               <Brain className="relative h-5 w-5 text-emerald-accent" />
             </span>
             <div>
-              <div className="text-sm font-semibold">IndustryScope AI</div>
+              <div className="text-sm font-semibold">{cp.name}</div>
               <div className="text-[10px] text-muted-foreground font-mono flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary breathe" /> tool-registry · tenant-bound · audited
+                <span className="h-1.5 w-1.5 rounded-full bg-primary breathe" /> {cp.meta}
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded border border-border/40"><ShieldCheck className="h-3 w-3 text-emerald-accent" /> L1 Recommend</span>
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded border border-border/40"><Wrench className="h-3 w-3" /> 9 tools</span>
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded border border-border/40"><ShieldCheck className="h-3 w-3 text-emerald-accent" /> {cp.level}</span>
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded border border-border/40"><Wrench className="h-3 w-3" /> {cp.toolsCount}</span>
           </div>
         </div>
 
@@ -100,14 +101,14 @@ export default function AiCopilot() {
                 </div>
                 {m.role === 'assistant' && m.tools && m.tools.length > 0 && (
                   <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                    <span className="text-[10px] text-muted-foreground font-mono flex items-center gap-1"><Sparkles className="h-3 w-3" /> tools:</span>
-                    {m.tools.map((t, ti) => (
-                      <span key={ti} className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary/10 text-emerald-accent border border-primary/20">{t}</span>
+                    <span className="text-[10px] text-muted-foreground font-mono flex items-center gap-1"><Sparkles className="h-3 w-3" /> {cp.toolsLabel}</span>
+                    {m.tools.map((to, ti) => (
+                      <span key={ti} className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary/10 text-emerald-accent border border-primary/20">{to}</span>
                     ))}
                   </div>
                 )}
                 {m.role === 'assistant' && m.freshness && (
-                  <div className="mt-1 text-[10px] text-muted-foreground font-mono">data freshness: {new Date(m.freshness).toLocaleTimeString()}</div>
+                  <div className="mt-1 text-[10px] text-muted-foreground font-mono">{cp.freshness}: {new Date(m.freshness).toLocaleTimeString(lang === 'fa' ? 'fa-IR' : 'en-US')}</div>
                 )}
               </div>
             </div>
@@ -116,7 +117,7 @@ export default function AiCopilot() {
             <div className="flex gap-3">
               <span className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/15 flex items-center justify-center"><Bot className="h-4 w-4 text-emerald-accent" /></span>
               <div className="glass rounded-xl px-4 py-2.5 flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Consulting tool registry…
+                <Loader2 className="h-3.5 w-3.5 animate-spin" /> {cp.consulting}
               </div>
             </div>
           )}
@@ -127,7 +128,7 @@ export default function AiCopilot() {
 
         {/* Suggestions */}
         <div className="px-4 py-2 border-t border-border/40 flex flex-wrap gap-1.5">
-          {SUGGESTIONS.map(s => (
+          {suggestions.map(s => (
             <button key={s} onClick={() => send(s)} disabled={loading}
               className="text-[11px] px-2.5 py-1 rounded-full border border-border/40 hover:border-primary/40 hover:bg-primary/5 text-muted-foreground hover:text-foreground transition-colors">
               {s}
@@ -141,7 +142,7 @@ export default function AiCopilot() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
-            placeholder="Ask: what needs my attention today?…"
+            placeholder={cp.placeholder}
             rows={1}
             className="min-h-[44px] max-h-32 resize-none bg-background/60"
             disabled={loading}
@@ -155,16 +156,12 @@ export default function AiCopilot() {
 
       {/* Trust footer */}
       <div className="mt-4 grid sm:grid-cols-3 gap-3">
-        {[
-          { icon: <ShieldCheck className="h-4 w-4" />, title: 'No direct DB access', desc: 'Model reasons only over explicit tool outputs.' },
-          { icon: <Sparkles className="h-4 w-4" />, title: 'Hallucination control', desc: 'Observations vs predictions vs recommendations are labeled.' },
-          { icon: <Wrench className="h-4 w-4" />, title: 'Audited & tenant-bound', desc: 'Every tool call logged with args and resource.' },
-        ].map(t => (
-          <div key={t.title} className="glass rounded-xl p-3 flex items-start gap-2.5">
-            <span className="text-emerald-accent mt-0.5">{t.icon}</span>
+        {cp.trust.map((tr, idx) => (
+          <div key={tr.t} className="glass rounded-xl p-3 flex items-start gap-2.5">
+            <span className="text-emerald-accent mt-0.5">{trustIcons[idx]}</span>
             <div>
-              <div className="text-sm font-medium">{t.title}</div>
-              <div className="text-xs text-muted-foreground">{t.desc}</div>
+              <div className="text-sm font-medium">{tr.t}</div>
+              <div className="text-xs text-muted-foreground">{tr.d}</div>
             </div>
           </div>
         ))}

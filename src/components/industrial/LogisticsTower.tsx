@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { Truck, MapPin, Clock, AlertTriangle, Package, Navigation } from 'lucide-react'
 import { KpiCard, SectionHeading, SectionShell } from './shared'
+import { useI18n } from '@/lib/i18n'
 
 type Shipment = {
   id: string; reference: string; status: string; carrier: string; supplier: string | null
@@ -24,13 +25,12 @@ const STATUS_CLS: Record<string, string> = {
   DELIVERED: 'bg-primary/15 text-emerald-accent border-primary/30',
   CANCELLED: 'bg-foreground/10 text-muted-foreground border-border',
 }
-const STATUS_LABEL: Record<string, string> = {
-  PLANNED: 'Planned', DISPATCHED: 'Dispatched', IN_TRANSIT: 'In Transit', DELAYED: 'Delayed', DELIVERED: 'Delivered', CANCELLED: 'Cancelled',
-}
 
 const PIPELINE = ['PLANNED', 'DISPATCHED', 'IN_TRANSIT', 'DELIVERED'] as const
 
 export default function LogisticsTower() {
+  const { t, lang } = useI18n()
+  const lg = t.logistics
   const [data, setData] = useState<Resp | null>(null)
   const [loading, setLoading] = useState(true)
   const [sel, setSel] = useState<string | null>(null)
@@ -48,21 +48,22 @@ export default function LogisticsTower() {
   useEffect(() => { load() }, [load])
 
   const selected = data?.shipments.find(s => s.id === sel) ?? null
+  const statusLabel = (s: string) => (lg.pipeline as Record<string, string>)[s] ?? s
 
   return (
     <SectionShell id="logistics">
       <SectionHeading
-        eyebrow="Logistics Control Tower"
-        title={<>Track every shipment. <span className="text-emerald-accent">Predict delays.</span></>}
-        description="Live shipment status, ETA, delay prediction, carrier and supplier linkage. Explicit state transitions — no arbitrary client-side mutation."
+        eyebrow={lg.eyebrow}
+        title={<>{lg.title}<span className="text-emerald-accent">{lg.titleAccent}</span></>}
+        description={lg.desc}
       />
 
       {data && (
         <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <KpiCard label="Open Shipments" value={data.counts.planned + data.counts.dispatched + data.counts.inTransit + data.counts.delayed} icon={<Truck className="h-4 w-4" />} dataState="LIVE" />
-          <KpiCard label="In Transit" value={data.counts.inTransit} accent="low" icon={<Navigation className="h-4 w-4" />} dataState="LIVE" />
-          <KpiCard label="Delayed" value={data.counts.delayed} accent="critical" icon={<AlertTriangle className="h-4 w-4" />} dataState="LIVE" />
-          <KpiCard label="Delivered (cycle)" value={data.counts.delivered} accent="primary" icon={<Package className="h-4 w-4" />} dataState="SYNCED" />
+          <KpiCard label={lg.kpis.open} value={data.counts.planned + data.counts.dispatched + data.counts.inTransit + data.counts.delayed} icon={<Truck className="h-4 w-4" />} dataState="LIVE" />
+          <KpiCard label={lg.kpis.transit} value={data.counts.inTransit} accent="low" icon={<Navigation className="h-4 w-4" />} dataState="LIVE" />
+          <KpiCard label={lg.kpis.delayed} value={data.counts.delayed} accent="critical" icon={<AlertTriangle className="h-4 w-4" />} dataState="LIVE" />
+          <KpiCard label={lg.kpis.delivered} value={data.counts.delivered} accent="primary" icon={<Package className="h-4 w-4" />} dataState="SYNCED" />
         </div>
       )}
 
@@ -76,7 +77,7 @@ export default function LogisticsTower() {
                 <div key={p} className="relative">
                   <div className={cn('rounded-lg border p-3 text-center', STATUS_CLS[p])}>
                     <div className="text-2xl font-semibold tabular-nums">{count}</div>
-                    <div className="text-[10px] uppercase tracking-wider mt-1">{STATUS_LABEL[p]}</div>
+                    <div className="text-[10px] uppercase tracking-wider mt-1">{statusLabel(p)}</div>
                   </div>
                   {idx < PIPELINE.length - 1 && <div className="hidden sm:block absolute top-1/2 -right-1 h-px w-2 bg-border" />}
                 </div>
@@ -90,14 +91,14 @@ export default function LogisticsTower() {
         {/* List */}
         <Card className="glass rounded-2xl p-3 lg:col-span-2 max-h-[560px] overflow-hidden flex flex-col">
           <div className="px-2 py-2 flex items-center justify-between">
-            <span className="text-sm font-semibold">Active Shipments</span>
-            <span className="text-[11px] text-muted-foreground font-mono">{data?.shipments.length ?? 0} total</span>
+            <span className="text-sm font-semibold">{lg.active}</span>
+            <span className="text-[11px] text-muted-foreground font-mono">{data?.shipments.length ?? 0} {lang === 'fa' ? 'مجموع' : 'total'}</span>
           </div>
           <div className="flex-1 overflow-y-auto space-y-1.5 pr-1">
             {loading ? (
-              <div className="py-10 text-center text-sm text-muted-foreground flex items-center justify-center gap-2"><span className="h-2 w-2 rounded-full bg-primary breathe" /> Loading shipments…</div>
+              <div className="py-10 text-center text-sm text-muted-foreground flex items-center justify-center gap-2"><span className="h-2 w-2 rounded-full bg-primary breathe" /> {lang === 'fa' ? 'بارگذاری محموله‌ها…' : 'Loading shipments…'}</div>
             ) : data?.shipments.length === 0 ? (
-              <div className="py-10 text-center text-sm text-muted-foreground">No shipments.</div>
+              <div className="py-10 text-center text-sm text-muted-foreground">{lang === 'fa' ? 'محموله‌ای نیست.' : 'No shipments.'}</div>
             ) : (
               data?.shipments.map(s => (
                 <button key={s.id} onClick={() => setSel(s.id)}
@@ -105,9 +106,9 @@ export default function LogisticsTower() {
                     sel === s.id ? 'border-primary/50 bg-primary/5' : 'border-border/40 hover:border-border/80 hover:bg-foreground/[0.02]')}>
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-xs text-muted-foreground">{s.reference}</span>
-                    <span className={cn('text-[10px] px-1.5 py-0.5 rounded border font-semibold uppercase', STATUS_CLS[s.status])}>{STATUS_LABEL[s.status]}</span>
+                    <span className={cn('text-[10px] px-1.5 py-0.5 rounded border font-semibold uppercase', STATUS_CLS[s.status])}>{statusLabel(s.status)}</span>
                   </div>
-                  <div className="mt-1.5 text-sm font-medium truncate">{s.originName} → {s.destName}</div>
+                  <div className="mt-1.5 text-sm font-medium truncate">{s.originName} {lang === 'fa' ? '←' : '→'} {s.destName}</div>
                   <div className="mt-1 flex items-center justify-between text-[11px] text-muted-foreground">
                     <span>{s.carrier}</span>
                     {s.delayMinutes > 0 && <span className="text-sev-critical font-mono">+{s.delayMinutes}m delay</span>}
@@ -129,36 +130,36 @@ export default function LogisticsTower() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="font-mono text-xs text-muted-foreground">{selected.reference}</div>
-                  <h3 className="text-lg font-semibold">{selected.originName} → {selected.destName}</h3>
+                  <h3 className="text-lg font-semibold">{selected.originName} {lang === 'fa' ? '←' : '→'} {selected.destName}</h3>
                   <div className="mt-1 text-xs text-muted-foreground">{selected.carrier}{selected.supplier ? ` · ${selected.supplier}` : ''} · {selected.distanceKm ?? '—'} km</div>
                 </div>
-                <span className={cn('text-xs px-2 py-1 rounded border font-semibold uppercase', STATUS_CLS[selected.status])}>{STATUS_LABEL[selected.status]}</span>
+                <span className={cn('text-xs px-2 py-1 rounded border font-semibold uppercase', STATUS_CLS[selected.status])}>{statusLabel(selected.status)}</span>
               </div>
 
               {/* Route viz (SVG) */}
               <div className="relative h-44 rounded-xl border border-border/40 bg-foreground/[0.02] overflow-hidden">
-                <RouteSvg progress={selected.progress} delayed={selected.status === 'DELAYED'} delivered={selected.status === 'DELIVERED'} />
+                <RouteSvg progress={selected.progress} delayed={selected.status === 'DELAYED'} delivered={selected.status === 'DELIVERED'} lang={lang} />
               </div>
 
               {/* Progress + ETA */}
               <div className="grid sm:grid-cols-3 gap-3">
                 <div className="rounded-lg border border-border/40 p-3">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Progress</div>
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{lg.progress}</div>
                   <div className="text-xl font-semibold tabular-nums">{Math.round(selected.progress * 100)}%</div>
                 </div>
                 <div className="rounded-lg border border-border/40 p-3">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" /> ETA</div>
-                  <div className="text-sm font-mono">{selected.eta ? new Date(selected.eta).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" /> {lg.eta}</div>
+                  <div className="text-sm font-mono">{selected.eta ? new Date(selected.eta).toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}</div>
                 </div>
                 <div className="rounded-lg border border-border/40 p-3">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Delay</div>
-                  <div className={cn('text-xl font-semibold tabular-nums', selected.delayMinutes > 0 ? 'text-sev-critical' : 'text-emerald-accent')}>{selected.delayMinutes > 0 ? `+${selected.delayMinutes}m` : 'on time'}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{lg.delay}</div>
+                  <div className={cn('text-xl font-semibold tabular-nums', selected.delayMinutes > 0 ? 'text-sev-critical' : 'text-emerald-accent')}>{selected.delayMinutes > 0 ? `+${selected.delayMinutes}${lang === 'fa' ? '' : 'm'}` : lg.onTime}</div>
                 </div>
               </div>
 
               {/* Items */}
               <div>
-                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1"><Package className="h-3 w-3" /> Contents</div>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1"><Package className="h-3 w-3" /> {lg.contents}</div>
                 <div className="flex flex-wrap gap-2">
                   {selected.items.map((it, i) => (
                     <span key={i} className="inline-flex items-center gap-1.5 rounded-md border border-border/40 px-2.5 py-1 text-xs bg-foreground/[0.02]">
@@ -172,14 +173,14 @@ export default function LogisticsTower() {
 
               {selected.lastTracking && (
                 <div className="rounded-lg border border-border/40 p-3 bg-foreground/[0.02]">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><MapPin className="h-3 w-3" /> Last tracking</div>
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><MapPin className="h-3 w-3" /> {lg.lastTracking}</div>
                   <div className="mt-1 text-sm">{selected.lastTracking.status} — {selected.lastTracking.note}</div>
-                  <div className="text-[11px] text-muted-foreground font-mono">{new Date(selected.lastTracking.at).toLocaleString()}</div>
+                  <div className="text-[11px] text-muted-foreground font-mono">{new Date(selected.lastTracking.at).toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US')}</div>
                 </div>
               )}
             </div>
           ) : (
-            <div className="py-16 text-center text-sm text-muted-foreground">Select a shipment to inspect.</div>
+            <div className="py-16 text-center text-sm text-muted-foreground">{lg.select}</div>
           )}
         </Card>
       </div>
@@ -187,7 +188,7 @@ export default function LogisticsTower() {
   )
 }
 
-function RouteSvg({ progress, delayed, delivered }: { progress: number; delayed: boolean; delivered: boolean }) {
+function RouteSvg({ progress, delayed, delivered, lang }: { progress: number; delayed: boolean; delivered: boolean; lang: 'fa' | 'en' }) {
   const x = 40 + (880 - 40) * Math.max(0.02, Math.min(0.98, progress))
   const color = delayed ? '#ef4444' : delivered ? '#34d399' : '#10b981'
   return (
@@ -201,9 +202,9 @@ function RouteSvg({ progress, delayed, delivered }: { progress: number; delayed:
       <line x1="40" y1="90" x2="880" y2="90" stroke="#1f2937" strokeWidth="2" />
       <line x1="40" y1="90" x2={x} y2="90" stroke={color} strokeWidth="3" className="flow-line" />
       <circle cx="40" cy="90" r="9" fill={color} />
-      <text x="40" y="120" fill="#94a3b8" fontSize="11" fontFamily="ui-monospace, monospace" textAnchor="middle">Origin</text>
+      <text x="40" y="120" fill="#94a3b8" fontSize="11" fontFamily="ui-monospace, monospace" textAnchor="middle">{lang === 'fa' ? 'مبدأ' : 'Origin'}</text>
       <circle cx="880" cy="90" r="9" fill={delivered ? color : '#1f2937'} stroke={color} strokeWidth="2" />
-      <text x="880" y="120" fill="#94a3b8" fontSize="11" fontFamily="ui-monospace, monospace" textAnchor="middle">Destination</text>
+      <text x="880" y="120" fill="#94a3b8" fontSize="11" fontFamily="ui-monospace, monospace" textAnchor="middle">{lang === 'fa' ? 'مقصد' : 'Destination'}</text>
       <g>
         <circle cx={x} cy="90" r="8" fill={color} />
         <circle cx={x} cy="90" r="14" fill={color} opacity="0.25" className="breathe" />

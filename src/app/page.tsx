@@ -26,16 +26,7 @@ export default function Home() {
         <Hero onEnterDemo={scrollToPlatform} />
         <LiveWorld />
         <div id="command-center" className="px-4 sm:px-6 lg:px-8 py-16 sm:py-24 max-w-7xl mx-auto w-full">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="h-px w-6 bg-primary/60" />
-            <span className="text-[11px] uppercase tracking-[0.2em] text-emerald-accent font-semibold">Executive Command Center</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground">
-            What needs my attention?
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-2xl leading-relaxed">
-            The signature IndustryScope experience. Open the command center and the system tells you — in plain language — what is happening, why it matters, and what to do.
-          </p>
+          <CommandCenterIntro />
           <div className="mt-6">
             <CommandCenter />
           </div>
@@ -50,5 +41,25 @@ export default function Home() {
       </main>
       <Footer />
     </div>
+  )
+}
+
+// Localized intro for the command center section
+import { useI18n } from '@/lib/i18n'
+function CommandCenterIntro() {
+  const { t } = useI18n()
+  return (
+    <>
+      <div className="flex items-center gap-2 mb-2">
+        <span className="h-px w-6 bg-primary/60" />
+        <span className="text-[11px] uppercase tracking-[0.2em] text-emerald-accent font-semibold">{t.commandCenter.eyebrow}</span>
+      </div>
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground">
+        {t.commandCenter.title}
+      </h2>
+      <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-2xl leading-relaxed">
+        {t.commandCenter.desc}
+      </p>
+    </>
   )
 }

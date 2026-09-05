@@ -8,6 +8,7 @@ import {
   CheckCircle2, Brain, Activity, ArrowRight, Clock,
 } from 'lucide-react'
 import { SeverityBadge, ConfidenceMeter, DataStateDot, KpiCard } from './shared'
+import { useI18n } from '@/lib/i18n'
 
 type Alert = {
   id: string; severity: string; category: string; title: string; message: string
@@ -45,6 +46,8 @@ const CAT_ICON: Record<string, React.ReactNode> = {
 const AUTONOMY = ['Analyze', 'Recommend', 'Prepare', 'Human Approval', 'Autonomous']
 
 export default function CommandCenter() {
+  const { t, lang } = useI18n()
+  const cc = t.commandCenter
   const [data, setData] = useState<CC | null>(null)
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
@@ -70,7 +73,7 @@ export default function CommandCenter() {
   if (loading || !data) {
     return (
       <div className="py-16 text-center text-muted-foreground text-sm flex items-center justify-center gap-2">
-        <span className="h-2 w-2 rounded-full bg-primary breathe" /> Loading command center…
+        <span className="h-2 w-2 rounded-full bg-primary breathe" /> {lang === 'fa' ? 'بارگذاری مرکز فرماندهی…' : 'Loading command center…'}
       </div>
     )
   }
@@ -84,24 +87,24 @@ export default function CommandCenter() {
         <div className="relative flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-emerald-accent">
-              <DataStateDot state="LIVE" /> {data.organization} · Command Center
+              <DataStateDot state="LIVE" /> {data.organization} · {cc.eyebrow}
             </div>
-            <h2 className="mt-3 text-3xl sm:text-5xl font-semibold tracking-tight">{data.greeting.headline}</h2>
+            <h2 className="mt-3 text-3xl sm:text-5xl font-semibold tracking-tight">{cc.greeting}</h2>
             <p className="mt-2 text-xl sm:text-2xl text-muted-foreground">
-              <span className="text-foreground font-medium">{data.greeting.subhead}</span>
+              <span className="text-foreground font-medium">{data.alertCounts.total} {cc.attention}</span>
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {data.alertCounts.critical > 0 && <SeverityBadge severity="CRITICAL" /> && <span className="inline-flex items-center gap-1.5 text-sm"><span className="h-2 w-2 rounded-full bg-sev-critical" /> {data.alertCounts.critical} Critical</span>}
-              {data.alertCounts.high > 0 && <span className="inline-flex items-center gap-1.5 text-sm"><span className="h-2 w-2 rounded-full bg-sev-high" /> {data.alertCounts.high} High</span>}
-              {data.alertCounts.medium > 0 && <span className="inline-flex items-center gap-1.5 text-sm"><span className="h-2 w-2 rounded-full bg-sev-medium" /> {data.alertCounts.medium} Medium</span>}
-              {data.alertCounts.low > 0 && <span className="inline-flex items-center gap-1.5 text-sm"><span className="h-2 w-2 rounded-full bg-sev-low" /> {data.alertCounts.low} Low</span>}
+              {data.alertCounts.critical > 0 && <span className="inline-flex items-center gap-1.5 text-sm"><span className="h-2 w-2 rounded-full bg-sev-critical" /> {data.alertCounts.critical} {cc.critical}</span>}
+              {data.alertCounts.high > 0 && <span className="inline-flex items-center gap-1.5 text-sm"><span className="h-2 w-2 rounded-full bg-sev-high" /> {data.alertCounts.high} {cc.high}</span>}
+              {data.alertCounts.medium > 0 && <span className="inline-flex items-center gap-1.5 text-sm"><span className="h-2 w-2 rounded-full bg-sev-medium" /> {data.alertCounts.medium} {cc.medium}</span>}
+              {data.alertCounts.low > 0 && <span className="inline-flex items-center gap-1.5 text-sm"><span className="h-2 w-2 rounded-full bg-sev-low" /> {data.alertCounts.low} {cc.low}</span>}
             </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Operational Health</div>
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{cc.operationalHealth}</div>
               <div className="text-4xl font-semibold tabular-nums text-emerald-accent">{data.operationalHealth}<span className="text-lg text-muted-foreground">/100</span></div>
-              <div className="text-[11px] text-muted-foreground">based on {data.topRisks.length} active risks</div>
+              <div className="text-[11px] text-muted-foreground">{data.topRisks.length} {cc.activeRisks}</div>
             </div>
             <div className="h-16 w-16 relative data-pulse rounded-full border border-primary/40 flex items-center justify-center">
               <ShieldCheck className="h-7 w-7 text-emerald-accent" />
@@ -112,19 +115,19 @@ export default function CommandCenter() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <KpiCard label="Capital Locked (Inventory)" value={`$${(k.inventoryCapitalLockedUsd / 1000).toFixed(0)}k`} delta="-6.4% vs 30d" deltaDirection="down" icon={<Coins className="h-4 w-4" />} accent="high" dataState="SYNCED" />
-        <KpiCard label="Stockout Items" value={k.stockoutItems} delta="+3 today" deltaDirection="up" icon={<PackageX className="h-4 w-4" />} accent="critical" dataState="LIVE" />
-        <KpiCard label="Delayed Shipments" value={k.delayedShipments} delta={`of ${k.openShipments} open`} deltaDirection="flat" icon={<Truck className="h-4 w-4" />} accent="high" dataState="LIVE" />
-        <KpiCard label="On-Time in-Full (OTIF)" value={`${k.otfPercent}%`} delta="target 95%" deltaDirection="down" icon={<Activity className="h-4 w-4" />} accent="medium" dataState="SYNCED" />
+        <KpiCard label={cc.kpis.capital} value={`$${(k.inventoryCapitalLockedUsd / 1000).toFixed(0)}k`} delta={lang === 'fa' ? '-۶.۴٪ vs ۳۰ روز' : '-6.4% vs 30d'} deltaDirection="down" icon={<Coins className="h-4 w-4" />} accent="high" dataState="SYNCED" />
+        <KpiCard label={cc.kpis.stockout} value={k.stockoutItems} delta={lang === 'fa' ? `امروز +۳` : '+3 today'} deltaDirection="up" icon={<PackageX className="h-4 w-4" />} accent="critical" dataState="LIVE" />
+        <KpiCard label={cc.kpis.delayed} value={k.delayedShipments} delta={lang === 'fa' ? `از ${k.openShipments} باز` : `of ${k.openShipments} open`} deltaDirection="flat" icon={<Truck className="h-4 w-4" />} accent="high" dataState="LIVE" />
+        <KpiCard label={cc.kpis.otf} value={`${k.otfPercent}%`} delta={lang === 'fa' ? 'هدف ۹۵٪' : 'target 95%'} deltaDirection="down" icon={<Activity className="h-4 w-4" />} accent="medium" dataState="SYNCED" />
       </div>
 
       {/* Alerts stream — signature experience */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-sev-high" /> What needs your attention
+            <AlertTriangle className="h-5 w-5 text-sev-high" /> {cc.needsAttention}
           </h3>
-          <span className="text-xs text-muted-foreground font-mono">{data.alerts.length} of {data.alertCounts.total} open</span>
+          <span className="text-xs text-muted-foreground font-mono">{data.alerts.length} {lang === 'fa' ? 'از' : 'of'} {data.alertCounts.total} {cc.open}</span>
         </div>
         <div className="space-y-2.5">
           {data.alerts.map(a => {
@@ -150,7 +153,7 @@ export default function CommandCenter() {
                   <div className="flex flex-col items-end gap-2 flex-shrink-0">
                     <ConfidenceMeter value={a.confidence} />
                     <span className="text-[10px] text-muted-foreground font-mono flex items-center gap-1">
-                      <Clock className="h-3 w-3" /> {timeAgo(a.createdAt)}
+                      <Clock className="h-3 w-3" /> {timeAgo(a.createdAt, lang, cc.ago)}
                     </span>
                   </div>
                 </button>
@@ -158,24 +161,24 @@ export default function CommandCenter() {
                   <div className="px-4 pb-4 pt-0 ml-6 space-y-3 border-t border-border/40">
                     {a.impact && (
                       <div>
-                        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Impact</div>
+                        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{cc.impact}</div>
                         <p className="text-sm">{a.impact}</p>
                       </div>
                     )}
                     {a.recommendation && (
                       <div>
-                        <div className="text-[11px] uppercase tracking-wider text-emerald-accent mb-1 flex items-center gap-1"><Brain className="h-3 w-3" /> Recommended Action</div>
+                        <div className="text-[11px] uppercase tracking-wider text-emerald-accent mb-1 flex items-center gap-1"><Brain className="h-3 w-3" /> {cc.recommended}</div>
                         <p className="text-sm">{a.recommendation}</p>
                       </div>
                     )}
                     <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                      <span className="text-[11px] text-muted-foreground font-mono">source: {a.source}</span>
+                      <span className="text-[11px] text-muted-foreground font-mono">{cc.source}: {a.source}</span>
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" onClick={() => ack(a.id)} disabled={isAck} className="h-8 text-xs">
-                          {isAck ? 'Acknowledged' : 'Acknowledge'}
+                          {isAck ? cc.acknowledged : cc.acknowledge}
                         </Button>
                         <Button size="sm" className="h-8 text-xs bg-primary text-primary-foreground">
-                          {a.category === 'inventory' ? 'Prepare Purchase Order' : a.category === 'logistics' ? 'Track Shipment' : 'Review'} <ArrowRight className="ml-1.5 h-3 w-3" />
+                          {a.category === 'inventory' ? cc.preparePO : a.category === 'logistics' ? cc.trackShipment : cc.review} <ArrowRight className="ml-1.5 h-3 w-3 rtl-flip" />
                         </Button>
                       </div>
                     </div>
@@ -191,8 +194,8 @@ export default function CommandCenter() {
       <div className="grid lg:grid-cols-2 gap-4">
         <Card className="glass rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold flex items-center gap-2"><Activity className="h-4 w-4 text-sev-high" /> Top Supply Chain Risks</h3>
-            <span className="text-xs text-muted-foreground font-mono">{data.topRisks.length} active</span>
+            <h3 className="font-semibold flex items-center gap-2"><Activity className="h-4 w-4 text-sev-high" /> {cc.topRisks}</h3>
+            <span className="text-xs text-muted-foreground font-mono">{data.topRisks.length} {cc.active}</span>
           </div>
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
             {data.topRisks.map(r => (
@@ -214,15 +217,15 @@ export default function CommandCenter() {
 
         <Card className="glass rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold flex items-center gap-2"><Brain className="h-4 w-4 text-emerald-accent" /> AI Recommendations</h3>
-            <span className="text-xs text-muted-foreground font-mono">{data.recommendations.length} pending</span>
+            <h3 className="font-semibold flex items-center gap-2"><Brain className="h-4 w-4 text-emerald-accent" /> {cc.aiRecs}</h3>
+            <span className="text-xs text-muted-foreground font-mono">{data.recommendations.length} {cc.pending}</span>
           </div>
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
             {data.recommendations.map(r => (
               <div key={r.id} className="rounded-lg border border-border/60 bg-foreground/[0.02] p-3">
                 <div className="flex items-start justify-between gap-2">
                   <span className="text-sm font-medium leading-snug">{r.title}</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary/15 text-emerald-accent whitespace-nowrap">L{r.autonomyLevel} · {AUTONOMY[r.autonomyLevel]}</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary/15 text-emerald-accent whitespace-nowrap">L{r.autonomyLevel} · {cc.autonomy[r.autonomyLevel] ?? r.action}</span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">{r.summary}</p>
                 {r.impact && <p className="mt-1 text-[11px] text-emerald-accent/90">{r.impact}</p>}
@@ -235,10 +238,11 @@ export default function CommandCenter() {
   )
 }
 
-function timeAgo(iso: string): string {
+function timeAgo(iso: string, lang: 'fa' | 'en', ago: { m: string; h: string; d: string }): string {
   const diff = Date.now() - new Date(iso).getTime()
   const h = Math.floor(diff / 3600000)
-  if (h < 1) return `${Math.max(1, Math.floor(diff / 60000))}m ago`
-  if (h < 24) return `${h}h ago`
-  return `${Math.floor(h / 24)}d ago`
+  const faNum = (n: number) => lang === 'fa' ? n.toLocaleString('fa-IR') : String(n)
+  if (h < 1) return `${faNum(Math.max(1, Math.floor(diff / 60000)))}${ago.m}`
+  if (h < 24) return `${faNum(h)}${ago.h}`
+  return `${faNum(Math.floor(h / 24))}${ago.d}`
 }
