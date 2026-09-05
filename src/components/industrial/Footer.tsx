@@ -92,6 +92,10 @@ export default function Footer() {
             <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-primary breathe" /> {f.dataSeeded}</span>
           </div>
         </div>
+        {/* Founder signature */}
+        <div className="mt-4 pt-3 border-t border-border/20 text-center">
+          <span className="text-xs text-emerald-accent font-medium">{f.founder}</span>
+        </div>
       </div>
 
       <Dialog open={!!legal} onOpenChange={(v) => !v && setLegal(null)}>

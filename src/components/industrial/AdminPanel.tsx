@@ -264,6 +264,7 @@ function ContentTab({ passcode }: { passcode: string }) {
   const [settings, setSettings] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [subtab, setSubtab] = useState<'texts' | 'appearance' | 'contact' | 'enterprise'>('texts')
   const load = useCallback(async () => {
     setLoading(true)
     try {
@@ -273,38 +274,150 @@ function ContentTab({ passcode }: { passcode: string }) {
   }, [])
   useEffect(() => { load() }, [load])
 
-  const editable: { key: string; label: string; type?: 'textarea' }[] = [
-    { key: 'hero_headline', label: 'تیتر اصلی صفحه (Hero)' },
-    { key: 'hero_subhead', label: 'زیرتیتر' },
-    { key: 'hero_supporting', label: 'متن پشتیبان', type: 'textarea' },
+  const set = (k: string, v: string) => setSettings(s => ({ ...s, [k]: v }))
+
+  const sections: { title: string; items: { key: string; label: string; type?: 'textarea' }[] }[] = [
+    {
+      title: 'بخش ورودی (Hero)',
+      items: [
+        { key: 'hero_headline', label: 'تیتر اصلی' },
+        { key: 'hero_subhead', label: 'زیرتیتر' },
+        { key: 'hero_supporting', label: 'متن پشتیبان', type: 'textarea' },
+      ],
+    },
+    {
+      title: 'بخش دنیای صنعتی زنده',
+      items: [
+        { key: 'liveworld_title', label: 'تیتر' },
+        { key: 'liveworld_desc', label: 'توضیح', type: 'textarea' },
+      ],
+    },
+    {
+      title: 'بخش مرکز فرماندهی',
+      items: [
+        { key: 'cmd_title', label: 'تیتر' },
+        { key: 'cmd_desc', label: 'توضیح', type: 'textarea' },
+      ],
+    },
+    {
+      title: 'بخش دستیار هوش مصنوعی',
+      items: [
+        { key: 'copilot_title', label: 'تیتر' },
+        { key: 'copilot_desc', label: 'توضیح', type: 'textarea' },
+      ],
+    },
+  ]
+
+  const appearanceItems: { key: string; label: string; type: 'color' | 'text' }[] = [
+    { key: 'theme_accent', label: 'رنگ تأکید (Accent)', type: 'color' },
+    { key: 'theme_background', label: 'رنگ پس‌زمینه', type: 'color' },
+    { key: 'theme_foreground', label: 'رنگ متن', type: 'color' },
+    { key: 'theme_primary', label: 'رنگ اصلی (Primary)', type: 'color' },
+  ]
+
+  const contactItems: { key: string; label: string }[] = [
+    { key: 'contact_phone', label: 'شماره تماس' },
+    { key: 'contact_email', label: 'ایمیل' },
+    { key: 'contact_address', label: 'آدرس' },
+    { key: 'contact_hours', label: 'ساعات کاری' },
+  ]
+
+  const enterpriseItems: { key: string; label: string; type?: 'textarea' }[] = [
     { key: 'cta_title', label: 'تیتر دعوت سازمانی' },
     { key: 'cta_desc', label: 'توضیحات دعوت سازمانی', type: 'textarea' },
-    { key: 'phone_override', label: 'تغییر شماره تماس' },
+    { key: 'cta_book_btn', label: 'متن دکمهٔ رزرو' },
   ]
 
   const save = async () => {
     setSaving(true)
     try {
       const r = await fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-owner-passcode': passcode }, body: JSON.stringify({ settings }) })
-      if (r.ok) toast.success('ذخیره شد ✓ (بعد از رفرش اعمال می‌شود)')
+      if (r.ok) toast.success('ذخیره شد ✓ (برای اعمال کامل، صفحه را رفرش کنید)')
       else toast.error('خطا')
     } finally { setSaving(false) }
   }
 
   if (loading) return <div className="py-12 text-center text-sm text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin inline" /></div>
 
-  return (
-    <div className="glass-strong rounded-2xl p-5 sm:p-6 space-y-4 max-w-2xl">
-      <h2 className="text-lg font-semibold">ویرایش متن‌های سایت</h2>
-      <p className="text-xs text-muted-foreground">این مقادیر در پایگاه داده ذخیره می‌شوند. برای اعمال، صفحه را رفرش کنید. (در نسخهٔ پایه، متن‌ها از دیکشنری کد می‌آیند؛ ویرایش اینجا نمونهٔ اولیهٔ ویراستاری است.)</p>
-      {editable.map(e => (
-        <Field key={e.key} label={e.label}>
-          {e.type === 'textarea'
-            ? <Textarea value={settings[e.key] || ''} onChange={ev => setSettings(s => ({ ...s, [e.key]: ev.target.value }))} rows={3} className="bg-background/60" />
-            : <Input value={settings[e.key] || ''} onChange={ev => setSettings(s => ({ ...s, [e.key]: ev.target.value }))} className="bg-background/60" />}
+  const renderField = (item: { key: string; label: string; type?: 'textarea' | 'color' }) => {
+    if (item.type === 'color') {
+      return (
+        <Field key={item.key} label={item.label}>
+          <div className="flex items-center gap-2">
+            <input type="color" value={settings[item.key] || '#10b981'} onChange={e => set(item.key, e.target.value)} className="h-10 w-16 rounded border border-border/40 bg-transparent cursor-pointer" />
+            <Input value={settings[item.key] || ''} onChange={e => set(item.key, e.target.value)} dir="ltr" placeholder="#10b981" className="bg-background/60 font-mono text-sm" />
+          </div>
         </Field>
-      ))}
-      <Button onClick={save} disabled={saving} className="bg-primary text-primary-foreground">{saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="h-4 w-4 mr-2" /> ذخیره</>}</Button>
+      )
+    }
+    if (item.type === 'textarea') {
+      return <Field key={item.key} label={item.label}><Textarea value={settings[item.key] || ''} onChange={ev => set(item.key, ev.target.value)} rows={3} className="bg-background/60" /></Field>
+    }
+    return <Field key={item.key} label={item.label}><Input value={settings[item.key] || ''} onChange={ev => set(item.key, ev.target.value)} className="bg-background/60" /></Field>
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Sub-tabs */}
+      <div className="flex flex-wrap gap-2">
+        {[
+          { id: 'texts', label: '📝 متن‌های سایت' },
+          { id: 'appearance', label: '🎨 ظاهر و رنگ‌ها' },
+          { id: 'contact', label: '📞 اطلاعات تماس' },
+          { id: 'enterprise', label: '💼 بخش سازمانی' },
+        ].map(s => (
+          <button key={s.id} onClick={() => setSubtab(s.id as any)} className={cn('px-4 py-2 rounded-lg text-sm font-medium transition-colors border', subtab === s.id ? 'bg-primary text-primary-foreground border-primary' : 'glass border-border/40 hover:border-primary/30')}>{s.label}</button>
+        ))}
+      </div>
+
+      <div className="glass-strong rounded-2xl p-5 sm:p-6 space-y-6">
+        {subtab === 'texts' && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-lg font-semibold flex items-center gap-2">📝 ویرایش متن‌های سایت</h2>
+              <p className="text-xs text-muted-foreground mt-1">متن‌های هر بخش از سایت را ویرایش کنید. تغییرات در پایگاه داده ذخیره می‌شوند؛ برای اعمال کامل، صفحه را رفرش کنید.</p>
+            </div>
+            {sections.map(sec => (
+              <div key={sec.title} className="space-y-3 pb-4 border-b border-border/30 last:border-0">
+                <h3 className="text-sm font-semibold text-emerald-accent">{sec.title}</h3>
+                {sec.items.map(item => renderField(item))}
+              </div>
+            ))}
+          </div>
+        )}
+        {subtab === 'appearance' && (
+          <div className="space-y-3">
+            <div>
+              <h2 className="text-lg font-semibold flex items-center gap-2">🎨 ظاهر و رنگ‌ها</h2>
+              <p className="text-xs text-muted-foreground mt-1">رنگ‌های برند را شخصی‌سازی کنید. (پیش‌نمایش زنده در نسخهٔ پیشرفته فعال خواهد شد.)</p>
+            </div>
+            {appearanceItems.map(item => renderField(item as any))}
+          </div>
+        )}
+        {subtab === 'contact' && (
+          <div className="space-y-3">
+            <div>
+              <h2 className="text-lg font-semibold flex items-center gap-2">📞 اطلاعات تماس</h2>
+              <p className="text-xs text-muted-foreground mt-1">راه‌های ارتباطی نمایش‌داده‌شده در سراسر سایت.</p>
+            </div>
+            {contactItems.map(item => renderField(item as any))}
+          </div>
+        )}
+        {subtab === 'enterprise' && (
+          <div className="space-y-3">
+            <div>
+              <h2 className="text-lg font-semibold flex items-center gap-2">💼 بخش سازمانی</h2>
+              <p className="text-xs text-muted-foreground mt-1">متن‌های بخش قیمت‌گذاری و دعوت سازمانی.</p>
+            </div>
+            {enterpriseItems.map(item => renderField(item))}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between pt-2 border-t border-border/30">
+          <p className="text-[11px] text-muted-foreground">برای اعمال کامل، صفحه را رفرش کنید.</p>
+          <Button onClick={save} disabled={saving} className="bg-primary text-primary-foreground">{saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="h-4 w-4 mr-2" /> ذخیرهٔ تغییرات</>}</Button>
+        </div>
+      </div>
     </div>
   )
 }

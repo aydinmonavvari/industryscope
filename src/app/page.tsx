@@ -16,6 +16,7 @@ import EnterpriseCTA from '@/components/industrial/EnterpriseCTA'
 import Contact from '@/components/industrial/Contact'
 import Footer from '@/components/industrial/Footer'
 import AdminPanel from '@/components/industrial/AdminPanel'
+import BackHome from '@/components/industrial/BackHome'
 import { RouterProvider, useRouter } from '@/lib/router'
 import { useI18n } from '@/lib/i18n'
 import { SectionShell, SectionHeading } from '@/components/industrial/shared'
@@ -52,18 +53,30 @@ function PageSwitch() {
         transition={{ duration: 0.28, ease: 'easeOut' }}
       >
         {page === 'home' && <HomePage />}
-        {page === 'command-center' && <CommandCenter />}
-        {page === 'inventory' && <InventoryIntelligence />}
-        {page === 'logistics' && <LogisticsTower />}
-        {page === 'risk' && <SupplyChainRisk />}
-        {page === 'copilot' && <AiCopilot />}
-        {page === 'ecosystem' && <ScopeEcosystem />}
-        {page === 'intelligence' && <ScopeIntelligence slug={param} />}
-        {page === 'enterprise' && <EnterpriseCTA />}
-        {page === 'contact' && <Contact />}
+        {page === 'command-center' && <PageWrapper><CommandCenter /></PageWrapper>}
+        {page === 'inventory' && <PageWrapper><InventoryIntelligence /></PageWrapper>}
+        {page === 'logistics' && <PageWrapper><LogisticsTower /></PageWrapper>}
+        {page === 'risk' && <PageWrapper><SupplyChainRisk /></PageWrapper>}
+        {page === 'copilot' && <PageWrapper><AiCopilot /></PageWrapper>}
+        {page === 'ecosystem' && <PageWrapper><ScopeEcosystem /></PageWrapper>}
+        {page === 'intelligence' && <PageWrapper><ScopeIntelligence slug={param} /></PageWrapper>}
+        {page === 'enterprise' && <PageWrapper><EnterpriseCTA /></PageWrapper>}
+        {page === 'contact' && <PageWrapper><Contact /></PageWrapper>}
         {page === 'admin' && <AdminPanel />}
       </motion.div>
     </AnimatePresence>
+  )
+}
+
+// PageWrapper: adds a "back home" button at the top of dedicated pages
+function PageWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <BackHome />
+      </div>
+      {children}
+    </div>
   )
 }
 

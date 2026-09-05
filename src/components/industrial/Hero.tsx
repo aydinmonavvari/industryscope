@@ -148,10 +148,10 @@ function CopyOverlay({ progress, onEnterDemo }: { progress: React.MutableRefObje
         <ArrowDown className="h-4 w-4 animate-bounce" />
       </div>
 
-      {/* Center scroll prompt — prominent at the very start (road scene) so the user knows to scroll */}
-      <div ref={centerScrollRef} className="absolute inset-x-0 bottom-24 flex flex-col items-center gap-3 pointer-events-none" style={{ opacity: 1, transition: 'opacity .6s ease, transform .6s ease' }}>
-        <div className="glass-strong rounded-full px-5 py-3 flex items-center gap-3 shadow-lg shadow-emerald-500/10 border border-emerald-500/30">
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-emerald-accent font-semibold">{h.scroll}</span>
+      {/* Center scroll prompt — prominent at the very start (road scene), placed above the flow chips so it's never hidden */}
+      <div ref={centerScrollRef} className="absolute inset-x-0 bottom-44 flex flex-col items-center gap-3 pointer-events-none z-20" style={{ opacity: 1, transition: 'opacity .6s ease, transform .6s ease' }}>
+        <div className="glass-strong rounded-full px-5 py-3 flex items-center gap-3 shadow-lg shadow-emerald-500/20 border border-emerald-500/40">
+          <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-emerald-accent font-bold">{h.scroll}</span>
           <span className="h-4 w-px bg-emerald-accent/40" />
           <ArrowDown className="h-5 w-5 text-emerald-accent animate-bounce" />
         </div>

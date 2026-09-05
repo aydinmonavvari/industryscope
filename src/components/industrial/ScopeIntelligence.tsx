@@ -14,6 +14,7 @@ type Article = {
   id: string; slug: string; category: string; title: string; insight: string; body: string
   stat?: string | null; statLabel?: string | null; delta?: string | null; readMins: number
   metaDescription?: string | null; keywords?: string | null; externalLinks?: string | null
+  ogImage?: string | null
 }
 
 export default function ScopeIntelligence({ slug }: { slug?: string | null }) {
@@ -64,9 +65,18 @@ export default function ScopeIntelligence({ slug }: { slug?: string | null }) {
         {articles.map((a, i) => (
           <motion.div key={a.slug} whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
             <Card className="glass rounded-2xl overflow-hidden group cursor-pointer h-full" onClick={() => openArticle(a.slug)}>
-              <div className="h-32 relative bg-gradient-to-br from-primary/10 via-foreground/[0.02] to-transparent border-b border-border/40 flex items-center justify-center">
-                <BarChart3 className={cn('h-10 w-10', i === 0 ? 'text-sev-high' : i === 1 ? 'text-sev-medium' : 'text-emerald-accent')} />
-                <div className="absolute top-3 left-3 text-[10px] uppercase tracking-wider font-mono text-muted-foreground bg-background/60 px-2 py-0.5 rounded">{a.category}</div>
+              <div className="h-32 relative border-b border-border/40 overflow-hidden">
+                {a.ogImage ? (
+                  <img src={a.ogImage} alt={a.title} className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-foreground/[0.02] to-transparent flex items-center justify-center">
+                    <BarChart3 className={cn('h-10 w-10', i === 0 ? 'text-sev-high' : i === 1 ? 'text-sev-medium' : 'text-emerald-accent')} />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+                {/* IndustryScope wordmark watermark */}
+                <div className="absolute bottom-2 right-2 font-mono text-[9px] tracking-widest text-emerald-accent/90 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">INDUSTRYSCOPE</div>
+                <div className="absolute top-3 left-3 text-[10px] uppercase tracking-wider font-mono text-muted-foreground bg-background/60 px-2 py-0.5 rounded backdrop-blur-sm">{a.category}</div>
                 <div className="absolute top-3 right-3 text-[10px] font-mono text-muted-foreground flex items-center gap-1"><Clock className="h-2.5 w-2.5" />{a.readMins}{lang === 'fa' ? '' : 'm'}</div>
               </div>
               <div className="p-4">
@@ -110,6 +120,13 @@ export default function ScopeIntelligence({ slug }: { slug?: string | null }) {
             <div className="py-12 text-center text-sm text-muted-foreground">در حال بارگذاری…</div>
           ) : (
             <article className="text-sm leading-relaxed space-y-3">
+              {active.ogImage && (
+                <div className="relative h-48 rounded-xl overflow-hidden border border-border/40 mb-3">
+                  <img src={active.ogImage} alt={active.title} className="absolute inset-0 w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+                  <div className="absolute bottom-3 right-3 font-mono text-[10px] tracking-widest text-emerald-accent font-bold drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">INDUSTRYSCOPE</div>
+                </div>
+              )}
               <p className="text-emerald-accent font-medium text-base">{active.insight}</p>
               {active.body.split('\n').map((line, i) => {
                 if (/^#{1,3}\s/.test(line)) return <h3 key={i} className="text-base font-semibold text-foreground mt-3 mb-1">{line.replace(/^#{1,3}\s/, '')}</h3>

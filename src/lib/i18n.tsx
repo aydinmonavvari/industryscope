@@ -230,8 +230,8 @@ export const dict = {
         { name: 'رشد', desc: 'زنجیره تأمین + تدارک + دستیار هوش مصنوعی.', features: ['همهٔ امکانات استارتر', 'تدارک و تأییدها', 'هوش تأمین‌کننده', 'دستیار هوش (رجیستری ابزار)', 'REST API و وب‌هوک', 'هوش Scope'], cta: 'مقیاس با رشد' },
         { name: 'سازمانی', desc: 'هوش کامل + یکپارچه‌سازی‌ها + هوش مصنوعی پیشرفته.', features: ['همهٔ امکانات رشد', 'یکپارچه‌سازی اختصاصی ERP', 'عامل‌های هوش و اتوماسیون گردش کار', 'نگهداری پیش‌بینانه', 'همزن دیجیتال (نقشه راه)', 'استقرار خصوصی', 'SSO و RBAC پیشرفته'], cta: 'تماس با تیم سازمانی' },
       ],
-      ctaTitle: 'آن را روی',
-      ctaTitleAccent: 'عملیاتیات خودتان',
+      ctaTitle: 'آن را روی ',
+      ctaTitleAccent: 'عملیاتیات خودتان ',
       ctaTitle2: 'ببینید — نه یک محیط آزمایشی.',
       ctaDesc: 'شرکای طراحی یک راه‌اندازی راهنما، منابع دادهٔ متصل و بازبینی بازگشت سرمایه در ۳۰، ۶۰ و ۹۰ روز می‌گیرند.',
       bookBtn: 'رزرو جلسهٔ شریک طراحی',
@@ -249,6 +249,7 @@ export const dict = {
       copy: '© Scope — عمودی IndustryScope. ساخت نمونهٔ اولیه برای نمایش.',
       version: 'نسخهٔ ۱.۰ · نمونهٔ اولیه',
       dataSeeded: 'داده: دموی کاشته‌شده',
+      founder: 'سازنده و مؤسس مجموعه‌های Scope: آیدین منوری',
     },
     contact: {
       eyebrow: 'تماس با ما',
@@ -495,6 +496,7 @@ export const dict = {
       ],
       copy: '© Scope — IndustryScope vertical. Prototype build for demonstration.',
       version: 'v1.0 · prototype', dataSeeded: 'data: seeded demo',
+      founder: 'Creator & Founder of the Scope product family: Aidin Manouri',
     },
     contact: {
       eyebrow: 'Contact',

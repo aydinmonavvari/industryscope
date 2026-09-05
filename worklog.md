@@ -203,3 +203,36 @@ Verification (Agent Browser):
 
 Stage Summary:
 - Ecosystem fixed (6 products, real domains, correct descriptions). Article cross-links fixed. Center "اسکرول کنید" prompt added to the 3D road scene start.
+
+---
+Task ID: FIX-V6
+Agent: main (architect + designer + editor)
+Task: Fix broken text, expand to 24 SEO articles + covers, back-home buttons, founder signature, full site-editor dashboard.
+
+Work Log:
+- Fixed broken text: EnterpriseCTA ctaTitle/ctaTitleAccent/ctaTitle2 had missing spaces → "آن را رویعملیاتیات خودتانببینید". Added trailing spaces → "آن را روی عملیاتیات خودتان ببینید — نه یک محیط آزمایشی."
+- Hero: moved center scroll prompt to bottom-44 (above the flow chips) with z-20, bold emerald border + larger text so it's never hidden behind the See/Understand/Predict/Act chips. Shortened h.scroll to "اسکرول کنید".
+- BackHome component (BackHome.tsx): reusable client button using hash router. Added PageWrapper in page.tsx that wraps all dedicated pages (command-center, inventory, logistics, risk, copilot, ecosystem, intelligence, enterprise, contact) with a BackHome button at top. Verified: clicking returns to #/.
+- Founder signature: added footer.founder = "سازنده و مؤسس مجموعه‌های Scope: آیدین منوری" (fa) / "Creator & Founder of the Scope product family: Aidin Manouri" (en). Renders in footer bottom bar (emerald). Verified visible.
+- Article covers: generated 8 branded cover images (1344x768) via image-generation skill — industrial emerald aesthetic per category. Saved to public/images/articles/cover-1..8.png.
+- Articles: wrote prisma/seed-articles.ts with 23 long SEO articles across ALL 8 categories (صنعت, عملیات, اقتصاد, تولید, هوش مصنوعی, لجستیک, موجودی, زنجیره تأمین). Each article: long structured body (بینش اجرایی/داده‌ها/تحلیل/بینش AI/اقدام/مطالعهٔ بیشتر), metaDescription, keywords, ogImage, externalLinks to ecosystem sites. Fixed cover→ogImage mapping. Seeded 23 articles.
+- ScopeIntelligence: article cards now show cover image (with INDUSTRYSCOPE watermark overlay + category badge) instead of generic icon; article modal shows cover at top with watermark. Added ogImage to Article type.
+- Admin ContentTab: rebuilt as full WordPress/Elementor-like site editor with 4 subtabs:
+  * 📝 متن‌های سایت: per-section text editing (Hero, LiveWorld, Command Center, Copilot headlines/descriptions).
+  * 🎨 ظاهر و رنگ‌ها: 4 color pickers (accent, background, foreground, primary) for theme customization.
+  * 📞 اطلاعات تماس: phone, email, address, hours.
+  * 💼 بخش سازمانی: CTA title, description, button text.
+  All backed by SiteSetting API (key-value store). Save persists to DB; refresh to apply.
+
+Verification (Agent Browser):
+- Center scroll prompt "اسکرول کنید" visible at bottom-44 above flow chips ✓
+- Founder signature "آیدین منوری" visible in footer ✓
+- Back-home button "بازگشت به خانه" on #/inventory, clicking returns to #/ ✓
+- EnterpriseCTA text fixed: "آن را روی عملیاتیات خودتان ببینید" ✓
+- Articles: 23 cover images loaded, INDUSTRYSCOPE watermark present ✓
+- Article modal: cover image shown ✓
+- Admin content tab: 4 subtabs (texts/appearance/contact/enterprise), 4 color pickers in appearance ✓
+- Lint clean.
+
+Stage Summary:
+- V6 COMPLETE. Broken text fixed, 23 long SEO articles with covers across all 8 categories, back-home buttons on all pages, founder signature in footer, full WordPress/Elementor-like site editor dashboard (texts + colors + contact + enterprise) in admin panel.
