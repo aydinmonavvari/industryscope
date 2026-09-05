@@ -17,6 +17,7 @@ import Contact from '@/components/industrial/Contact'
 import Footer from '@/components/industrial/Footer'
 import AdminPanel from '@/components/industrial/AdminPanel'
 import BackHome from '@/components/industrial/BackHome'
+import CargoPortModules from '@/components/industrial/CargoPortModules'
 import { RouterProvider, useRouter } from '@/lib/router'
 import { useI18n } from '@/lib/i18n'
 import { SectionShell, SectionHeading } from '@/components/industrial/shared'
@@ -105,44 +106,11 @@ function HomePage() {
         </div>
       </SectionShell>
 
-      {/* Product modules grid — entry to deep pages */}
-      <SectionShell id="modules" className="py-12">
-        <SectionHeading
-          eyebrow={t.nav.platform}
-          title={t.liveWorld.eyebrow}
-          description={t.liveWorld.desc}
-        />
-        <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ModuleCard onClick={() => navigate('inventory')} eyebrow={t.inventory.eyebrow} title={t.inventory.title + t.inventory.titleAccent} icon="📦" />
-          <ModuleCard onClick={() => navigate('logistics')} eyebrow={t.logistics.eyebrow} title={t.logistics.title + t.logistics.titleAccent} icon="🚛" />
-          <ModuleCard onClick={() => navigate('risk')} eyebrow={t.risk.eyebrow} title={t.risk.title + t.risk.titleAccent} icon="🛡️" />
-          <ModuleCard onClick={() => navigate('copilot')} eyebrow={t.copilot.eyebrow} title={t.copilot.title + t.copilot.titleAccent} icon="🧠" />
-          <ModuleCard onClick={() => navigate('ecosystem')} eyebrow={t.ecosystem.eyebrow} title={t.ecosystem.title + t.ecosystem.titleAccent} icon="🌐" />
-          <ModuleCard onClick={() => navigate('intelligence')} eyebrow={t.intelligence.eyebrow} title={t.intelligence.title} icon="📊" />
-        </div>
-      </SectionShell>
+      {/* Live 3D cargo port — interactive entry to deep pages */}
+      <CargoPortModules />
 
       <Testimonials />
       <EnterpriseCTA />
     </>
-  )
-}
-
-function ModuleCard({ onClick, eyebrow, title, icon }: { onClick: () => void; eyebrow: string; title: string; icon: string }) {
-  return (
-    <motion.button
-      onClick={onClick}
-      whileHover={{ y: -4 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className="glass rounded-2xl p-5 text-left relative overflow-hidden group border border-transparent hover:border-primary/30 transition-colors"
-    >
-      <div className="absolute -top-8 -right-8 h-24 w-24 rounded-full bg-primary/5 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-      <div className="flex items-center justify-between">
-        <span className="text-3xl">{icon}</span>
-        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-emerald-accent group-hover:translate-x-1 rtl-flip transition-all" />
-      </div>
-      <div className="mt-3 text-[10px] uppercase tracking-wider text-emerald-accent font-semibold">{eyebrow}</div>
-      <div className="mt-1 text-base font-medium leading-snug">{title}</div>
-    </motion.button>
   )
 }

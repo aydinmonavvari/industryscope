@@ -67,9 +67,9 @@ function CopyOverlay({ progress, onEnterDemo }: { progress: React.MutableRefObje
     let raf = 0
     const tick = () => {
       const p = progress.current
-      // Eyebrow + wordmark appear at the very start (p<0.05) and persist until truck exits
+      // Eyebrow stays during road; wordmark fades out EARLIER so the truck's brand becomes the only brand (no clash)
       set(eyebrowRef, p > 0.0 && p < 0.42 ? 1 : p >= 0.42 ? 0 : 1)
-      set(wordRef, p > 0.0 && p < 0.46 ? 1 : 0)
+      set(wordRef, p > 0.0 && p < 0.16 ? 1 : p < 0.28 ? 1 - (p - 0.16) / 0.12 : 0)
       // After warehouse reveal (p>0.62): brand headlines appear progressively
       set(headRef, smoothstep(0.64, 0.74, p))
       set(subRef, smoothstep(0.70, 0.80, p))
