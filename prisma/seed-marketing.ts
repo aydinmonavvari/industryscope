@@ -5,6 +5,7 @@ import { db } from '../src/lib/db'
 const ECO = {
   scopeos: 'https://scopeos.ir',
   finscope: 'https://finscope.ir',
+  goldscope: 'https://goldscope.ir',
   vestascope: 'https://vestascope.ir',
   healthscope: 'https://healthscope.ir',
 }
@@ -39,7 +40,7 @@ const ARTICLES = [
 ۳. سیاست بافر Class A و Class C را جدا نگه دارید.
 
 ## مطالعهٔ بیشتر
-- [FinScope](https://finscope.ir) — هوش مالی برای تحلیل هزینهٔ سرمایهٔ در گردش.
+- [FinScope](https://finscope.ir) — هوش مالی-اقتصادی برای تحلیل هزینهٔ سرمایهٔ در گردش.
 - [ScopeOS](https://scopeos.ir) — پایهٔ مشترک احراز هویت و سازمان‌ها در اکوسیستم Scope.`,
     externalLinks: JSON.stringify([
       { label: 'FinScope', url: ECO.finscope },
@@ -75,10 +76,10 @@ const ARTICLES = [
 ۳. برای موجودی راکد تأییدشده، تخفیف-تخصیص مجدد یا کاهش سفارش بعدی.
 
 ## مطالعهٔ بیشتر
-- [Vestascope](https://vestascope.ir) — هوش کالا برای تحلیل چرخش موجودی.
+- [FinScope](https://finscope.ir) — تحلیل مالی-اقتصادی برای سنجش گردش موجودی.
 - [ScopeOS](https://scopeos.ir) — پایهٔ مشترک اکوسیستم Scope.`,
     externalLinks: JSON.stringify([
-      { label: 'Vestascope', url: ECO.vestascope },
+      { label: 'FinScope', url: ECO.finscope },
       { label: 'ScopeOS', url: ECO.scopeos },
     ]),
   },
@@ -110,7 +111,7 @@ const ARTICLES = [
 ۳. خطاهای برنامه‌ریزی را به چرخهٔ تقاضا و آزادسازی بازخورید.
 
 ## مطالعهٔ بیشتر
-- [HealthScope](https://healthscope.ir) — هوش عملیاتی برای لجستیک سلامت.
+- [HealthScope](https://healthscope.ir) — مدیریت هوشمند کلینیک و بیمارستان‌ها؛ لجستیک تجهیزات و دارو.
 - [ScopeOS](https://scopeos.ir) — پایهٔ مشترک اکوسیستم Scope.`,
     externalLinks: JSON.stringify([
       { label: 'HealthScope', url: ECO.healthscope },

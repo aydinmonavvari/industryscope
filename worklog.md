@@ -177,3 +177,29 @@ Verification (Agent Browser):
 Stage Summary:
 - Production-final V4 COMPLETE. Site is multi-page (shorter homepage), has a full admin panel (leads + article CRUD with SEO + site content), ecosystem real links + article cross-links for SEO, Persian text fixed, PostgreSQL-ready (one-line provider change documented), full deployment guide written.
 - Ready to deploy: Supabase + Vercel + ParsPack per INDUSTRYSCOPE_DEPLOYMENT_GUIDE.md.
+
+---
+Task ID: FIX-V5
+Agent: main
+Task: Fix ecosystem product descriptions (esp. vestascope = luxury real estate), add 6th product VestaScope, fix article cross-links, add prominent "اسکرول کنید" center prompt at the start of the 3D road scene.
+
+Work Log:
+- Ecosystem: rewrote all product descriptions per user (fa+en):
+  * ScopeOS = مدیریت کسب‌وکار (حسابداری، حقوق، مالیات، منابع انسانی)
+  * FinScope = اولین اکوسیستم هوشمند و ابزارمحور تحلیل مالی-اقتصادی ایران
+  * GoldScope = مارکت‌پلیس هوشمند خرید و فروش طلا + مقایسهٔ قیمت از صدها فروشنده و کارگاه طلاسازی → goldscope.ir
+  * VestaScope = سایت هوشمند املاک لوکس منطقهٔ ۱ تهران → vestascope.ir (NEW 6th product)
+  * HealthScope = پلتفرم مدیریت هوشمند کلینیک و بیمارستان، مخصوص پزشکان و دندان‌پزشکان
+- ScopeEcosystem: updated DOMAINS map (added goldscope.ir, vestascope.ir), added Gem + Home icons, grid changed to lg:grid-cols-3 (fits 6 products in 2 rows).
+- Article cross-links fixed: dead-stock article no longer wrongly links to vestascope (now FinScope); lead-time → FinScope; OTIF → HealthScope (clinic/hospital logistics). Added ECO.goldscope to seed-marketing.
+- Hero: added a prominent center "اسکرول کنید" prompt (glass-strong pill with emerald border + bouncing arrow) at the very start of the 3D road scene, fading out by ~12% scroll. Shortened h.scroll to "اسکرول کنید".
+
+Verification (Agent Browser):
+- Home: center scroll prompt "اسکرول کنید" visible at start (glass-strong pill) ✓
+- Ecosystem #/ecosystem: 6 products, 5 real domain links (scopeos, finscope, goldscope, vestascope, healthscope) ✓
+- Descriptions correct: VestaScope="املاک لوکس منطقهٔ ۱ تهران", GoldScope="مارکت‌پلیس طلا", HealthScope="کلینیک و بیمارستان" ✓
+- Article dead-stock cross-links → finscope.ir + scopeos.ir (no longer vestascope) ✓
+- Lint clean.
+
+Stage Summary:
+- Ecosystem fixed (6 products, real domains, correct descriptions). Article cross-links fixed. Center "اسکرول کنید" prompt added to the 3D road scene start.

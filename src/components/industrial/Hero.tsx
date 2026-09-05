@@ -61,6 +61,7 @@ function CopyOverlay({ progress, onEnterDemo }: { progress: React.MutableRefObje
   const hintRef = useRef<HTMLDivElement>(null)
   const fadeRef = useRef<HTMLDivElement>(null)
   const stateRef = useRef<HTMLDivElement>(null)
+  const centerScrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let raf = 0
@@ -74,8 +75,14 @@ function CopyOverlay({ progress, onEnterDemo }: { progress: React.MutableRefObje
       set(subRef, smoothstep(0.70, 0.80, p))
       set(suppRef, smoothstep(0.76, 0.86, p))
       set(ctaRef, smoothstep(0.80, 0.90, p))
-      // scroll hint fades out quickly
-      set(hintRef, smoothstepInv(0.0, 0.04, p))
+      // scroll hint fades out as the user starts scrolling
+      set(hintRef, smoothstepInv(0.0, 0.06, p))
+      // center scroll prompt: prominent at the very start, fades by ~12% scroll
+      if (centerScrollRef.current) {
+        const a = smoothstepInv(0.0, 0.12, p)
+        centerScrollRef.current.style.opacity = String(a)
+        centerScrollRef.current.style.transform = `translateY(${(1 - a) * 10}px)`
+      }
       // seamless handoff fade near end → page background color
       if (fadeRef.current) fadeRef.current.style.opacity = String(smoothstep(0.95, 1.0, p))
       // scene-state label bottom-left
@@ -139,6 +146,15 @@ function CopyOverlay({ progress, onEnterDemo }: { progress: React.MutableRefObje
       <div ref={hintRef} className="absolute bottom-8 inset-x-0 flex flex-col items-center gap-2 text-muted-foreground" style={{ opacity: 1, transition: 'opacity .5s ease' }}>
         <span className="font-mono text-[10px] uppercase tracking-widest">{h.scroll}</span>
         <ArrowDown className="h-4 w-4 animate-bounce" />
+      </div>
+
+      {/* Center scroll prompt — prominent at the very start (road scene) so the user knows to scroll */}
+      <div ref={centerScrollRef} className="absolute inset-x-0 bottom-24 flex flex-col items-center gap-3 pointer-events-none" style={{ opacity: 1, transition: 'opacity .6s ease, transform .6s ease' }}>
+        <div className="glass-strong rounded-full px-5 py-3 flex items-center gap-3 shadow-lg shadow-emerald-500/10 border border-emerald-500/30">
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-emerald-accent font-semibold">{h.scroll}</span>
+          <span className="h-4 w-px bg-emerald-accent/40" />
+          <ArrowDown className="h-5 w-5 text-emerald-accent animate-bounce" />
+        </div>
       </div>
 
       {/* progress bar (top, subtle) */}

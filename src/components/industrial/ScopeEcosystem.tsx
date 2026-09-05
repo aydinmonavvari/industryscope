@@ -1,7 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { Card } from '@/components/ui/card'
-import { Hexagon, Boxes, Coins, HeartPulse, Layers3, ArrowUpRight } from 'lucide-react'
+import { Hexagon, Boxes, Coins, HeartPulse, Layers3, ArrowUpRight, Home, Gem } from 'lucide-react'
 import { SectionHeading, SectionShell } from './shared'
 import { cn } from '@/lib/utils'
 import { useI18n } from '@/lib/i18n'
@@ -11,7 +11,8 @@ const DOMAINS: Record<string, string> = {
   ScopeOS: 'https://scopeos.ir',
   IndustryScope: '/', // self
   FinScope: 'https://finscope.ir',
-  GoldScope: 'https://vestascope.ir',
+  GoldScope: 'https://goldscope.ir',
+  VestaScope: 'https://vestascope.ir',
   HealthScope: 'https://healthscope.ir',
 }
 
@@ -19,8 +20,9 @@ const ICONS = [
   <Hexagon key="0" className="h-5 w-5" />,
   <Layers3 key="1" className="h-5 w-5" />,
   <Coins key="2" className="h-5 w-5" />,
-  <Boxes key="3" className="h-5 w-5" />,
-  <HeartPulse key="4" className="h-5 w-5" />,
+  <Gem key="3" className="h-5 w-5" />,
+  <Home key="4" className="h-5 w-5" />,
+  <HeartPulse key="5" className="h-5 w-5" />,
 ]
 
 export default function ScopeEcosystem() {
@@ -35,7 +37,7 @@ export default function ScopeEcosystem() {
         description={e.desc}
       />
 
-      <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {e.products.map((p, i) => {
           const isSelf = p.name === 'IndustryScope'
           const url = DOMAINS[p.name]
