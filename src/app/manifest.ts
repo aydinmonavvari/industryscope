@@ -12,7 +12,7 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: 'fa',
     dir: 'rtl',
     icons: [
-      { src: '/favicon.ico', sizes: 'any', type: 'image/x-icon' },
+      { src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' },
     ],
     categories: ['business', 'productivity', 'utilities'],
   }
