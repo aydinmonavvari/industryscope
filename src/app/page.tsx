@@ -11,13 +11,14 @@ import SupplyChainRisk from '@/components/industrial/SupplyChainRisk'
 import AiCopilot from '@/components/industrial/AiCopilot'
 import ScopeEcosystem from '@/components/industrial/ScopeEcosystem'
 import ScopeIntelligence from '@/components/industrial/ScopeIntelligence'
-import Testimonials from '@/components/industrial/Testimonials'
 import EnterpriseCTA from '@/components/industrial/EnterpriseCTA'
 import Contact from '@/components/industrial/Contact'
 import Footer from '@/components/industrial/Footer'
 import AdminPanel from '@/components/industrial/AdminPanel'
 import BackHome from '@/components/industrial/BackHome'
 import CargoPortModules from '@/components/industrial/CargoPortModules'
+import CargoTrainSection from '@/components/industrial/CargoTrainSection'
+import StationForm from '@/components/industrial/StationForm'
 import { RouterProvider, useRouter } from '@/lib/router'
 import { useI18n } from '@/lib/i18n'
 import { SectionShell, SectionHeading } from '@/components/industrial/shared'
@@ -109,8 +110,13 @@ function HomePage() {
       {/* Live 3D cargo port — interactive entry to deep pages */}
       <CargoPortModules />
 
-      <Testimonials />
-      <EnterpriseCTA />
+      {/* Cargo train: testimonials + pricing as moving wagons on rails (scroll-driven) */}
+      <CargoTrainSection />
+
+      {/* Classic train station + quote request form (ticket booth vibe) */}
+      <StationForm>
+        <EnterpriseCTA />
+      </StationForm>
     </>
   )
 }
