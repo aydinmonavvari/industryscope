@@ -108,8 +108,8 @@ function CopyOverlay({ progress, onEnterDemo }: { progress: React.MutableRefObje
       </div>
 
       {/* wordmark — large, appears over the road/truck phase */}
-      <div ref={wordRef} className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center px-6 text-center" style={{ opacity: 0, transition: 'opacity .8s ease, transform .8s ease' }}>
-        <div className="text-[18vw] sm:text-[14vw] md:text-[12vw] lg:text-[10rem] font-semibold tracking-tight leading-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+      <div ref={wordRef} className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center px-3 sm:px-6 text-center pointer-events-none z-10" style={{ opacity: 0, transition: 'opacity .8s ease, transform .8s ease' }}>
+        <div className="text-[13vw] sm:text-[12vw] md:text-[10vw] lg:text-[9rem] font-semibold tracking-tight leading-[0.95] drop-shadow-[0_4px_28px_rgba(0,0,0,0.75)] whitespace-nowrap" style={{ opacity: 0.85 }}>
           <span className="text-foreground">INDUSTRY</span>
           <span className="bg-gradient-to-r from-emerald-accent via-primary to-emerald-accent/70 bg-clip-text text-transparent">SCOPE</span>
         </div>
@@ -149,7 +149,7 @@ function CopyOverlay({ progress, onEnterDemo }: { progress: React.MutableRefObje
       </div>
 
       {/* Center scroll prompt — prominent at the very start (road scene), placed above the flow chips so it's never hidden */}
-      <div ref={centerScrollRef} className="absolute inset-x-0 bottom-44 flex flex-col items-center gap-3 pointer-events-none z-20" style={{ opacity: 1, transition: 'opacity .6s ease, transform .6s ease' }}>
+      <div ref={centerScrollRef} className="absolute inset-x-0 bottom-44 sm:bottom-44 flex flex-col items-center gap-3 pointer-events-none z-20" style={{ opacity: 1, transition: 'opacity .6s ease, transform .6s ease' }}>
         <div className="glass-strong rounded-full px-5 py-3 flex items-center gap-3 shadow-lg shadow-emerald-500/20 border border-emerald-500/40">
           <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-emerald-accent font-bold">{h.scroll}</span>
           <span className="h-4 w-px bg-emerald-accent/40" />
@@ -210,14 +210,29 @@ function FlowChips() {
     { icon: <Brain className="h-4 w-4" />, label: c.act, desc: c.actD },
   ]
   return (
-    <div className="absolute bottom-6 inset-x-0 px-6 hidden sm:grid grid-cols-4 gap-3 max-w-3xl mx-auto">
-      {items.map((it) => (
-        <div key={it.label} className="glass rounded-xl p-3 text-center">
-          <div className="flex items-center justify-center gap-2 text-emerald-accent">{it.icon}<span className="text-sm font-semibold text-foreground">{it.label}</span></div>
-          <p className="mt-1 text-[11px] text-muted-foreground">{it.desc}</p>
-        </div>
-      ))}
-    </div>
+    <>
+      {/* Desktop flow chips — 4 columns */}
+      <div className="absolute bottom-6 inset-x-0 px-6 hidden sm:grid grid-cols-4 gap-3 max-w-3xl mx-auto">
+        {items.map((it) => (
+          <div key={it.label} className="glass rounded-xl p-3 text-center">
+            <div className="flex items-center justify-center gap-2 text-emerald-accent">{it.icon}<span className="text-sm font-semibold text-foreground">{it.label}</span></div>
+            <p className="mt-1 text-[11px] text-muted-foreground">{it.desc}</p>
+          </div>
+        ))}
+      </div>
+      {/* Mobile flow chips — 2x2 grid, more compact, higher up to avoid overlap */}
+      <div className="absolute bottom-2 inset-x-0 px-3 sm:hidden grid grid-cols-2 gap-2 max-w-xs mx-auto">
+        {items.map((it) => (
+          <div key={it.label} className="glass rounded-lg p-2 text-center">
+            <div className="flex items-center justify-center gap-1.5 text-emerald-accent">
+              <span className="scale-90">{it.icon}</span>
+              <span className="text-xs font-semibold text-foreground">{it.label}</span>
+            </div>
+            <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">{it.desc}</p>
+          </div>
+        ))}
+      </div>
+    </>
   )
 }
 

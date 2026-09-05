@@ -63,13 +63,13 @@ const CAM_LOOK: VKey[] = [
 ]
 // Truck x position (travels left → right, exits into facility)
 const TRUCK_X: { p: number; v: number }[] = [
-  { p: 0.0, v: -58 },
-  { p: 0.18, v: -26 },
-  { p: 0.36, v: 10 },
-  { p: 0.46, v: 34 },
-  { p: 0.6, v: 66 },
-  { p: 0.68, v: 78 },
-  { p: 1.0, v: 78 },
+  { p: 0.0, v: -38 },
+  { p: 0.14, v: -18 },
+  { p: 0.34, v: 8 },
+  { p: 0.46, v: 30 },
+  { p: 0.6, v: 58 },
+  { p: 0.68, v: 72 },
+  { p: 1.0, v: 72 },
 ]
 
 // ---- Camera rig -------------------------------------------------------------
@@ -99,13 +99,13 @@ function Road() {
       {/* asphalt */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 4]} receiveShadow>
         <planeGeometry args={[200, 60]} />
-        <meshStandardMaterial color="#0c1118" roughness={0.95} metalness={0} />
+        <meshStandardMaterial color="#10161f" roughness={0.92} metalness={0} />
       </mesh>
       {/* center lane markings (subtle) */}
       {Array.from({ length: 28 }).map((_, i) => (
         <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[-70 + i * 5, 0.01, 4]}>
           <planeGeometry args={[2.4, 0.18]} />
-          <meshStandardMaterial color="#1b2433" roughness={0.6} emissive="#16202c" emissiveIntensity={0.2} />
+          <meshStandardMaterial color="#2a323e" roughness={0.5} emissive="#1f2a36" emissiveIntensity={0.35} />
         </mesh>
       ))}
       {/* shoulder lines */}
@@ -356,17 +356,18 @@ function BrandText({ side, flipped, progress }: { side: number; flipped?: boolea
   return (
     <group ref={ref} position={[-1.5, 2.2, side]} rotation={[0, flipped ? Math.PI : 0, 0]}>
       <Text
-        fontSize={0.72}
+        fontSize={0.76}
         letterSpacing={0.02}
-        color="#d7dee8"
+        color="#ffffff"
         anchorX="center"
         anchorY="middle"
-        outlineWidth={0.004}
+        outlineWidth={0.006}
         outlineColor="#0a0d12"
+        outlineOpacity={0.9}
       >
         INDUSTRYSCOPE
       </Text>
-      <Text position={[0, -0.6, 0]} fontSize={0.18} letterSpacing={0.14} color="#5b6573" anchorX="center" anchorY="middle">
+      <Text position={[0, -0.62, 0]} fontSize={0.2} letterSpacing={0.14} color="#a8b3c2" anchorX="center" anchorY="middle" outlineWidth={0.003} outlineColor="#0a0d12">
         AI OPERATING SYSTEM
       </Text>
     </group>
@@ -674,13 +675,13 @@ function Scene({ progress }: { progress: ProgressRef }) {
   })
   return (
     <>
-      <fog attach="fog" args={['#070b12', 22, 78]} />
-      <ambientLight intensity={0.35} color="#0a1422" />
-      <hemisphereLight args={['#0a1422', '#05080d', 0.4]} />
-      <directionalLight position={[10, 18, 12]} intensity={0.7} color="#cfe0ff" castShadow />
+      <fog attach="fog" args={['#070b12', 32, 110]} />
+      <ambientLight intensity={0.6} color="#0a1422" />
+      <hemisphereLight args={['#0a1422', '#05080d', 0.72]} />
+      <directionalLight position={[10, 18, 12]} intensity={1.15} color="#cfe0ff" castShadow />
       <pointLight position={[40, 8, -28]} intensity={0} color="#10b981" ref={intelligenceLight} distance={40} />
-      <pointLight position={[40, 11, -28]} intensity={0.6} color="#3a4150" distance={50} />
-      <pointLight position={[24, 10, -40]} intensity={0.4} color="#4a5360" distance={40} />
+      <pointLight position={[40, 11, -28]} intensity={0.95} color="#3a4150" distance={50} />
+      <pointLight position={[24, 10, -40]} intensity={0.7} color="#4a5360" distance={40} />
 
       <Road />
       <HorizonBuildings />
@@ -695,10 +696,12 @@ function Scene({ progress }: { progress: ProgressRef }) {
 }
 
 export default function CinematicHero3D({ progress }: { progress: ProgressRef }) {
+  // Wider FOV on mobile so the truck + brand fit better in the frame
+  const fov = typeof window !== 'undefined' && window.innerWidth < 640 ? 62 : 48
   return (
     <Canvas
       shadows={false}
-      camera={{ position: [0, 4, 24], fov: 48, near: 0.1, far: 200 }}
+      camera={{ position: [0, 4, 24], fov, near: 0.1, far: 200 }}
       dpr={[1, 1.5]}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       style={{ width: '100%', height: '100%' }}
