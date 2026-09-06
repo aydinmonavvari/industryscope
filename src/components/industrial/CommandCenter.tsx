@@ -61,12 +61,30 @@ export default function CommandCenter() {
     try {
       const r = await fetch('/api/command-center', { cache: 'no-store' })
       const d = await r.json()
-      setData(d)
-      setExpanded(d.alerts?.[0]?.id ?? null)
-    } finally { setLoading(false) }
+      if (d && d.error) { setData(null) } else { setData(d); setExpanded(d.alerts?.[0]?.id ?? null) }
+    } catch { setData(null) }
+    finally { setLoading(false) }
   }, [])
 
   useEffect(() => { load() }, [load])
+
+  if (loading) {
+    return (
+      <div className="py-16 text-center text-muted-foreground text-sm flex items-center justify-center gap-2">
+        <span className="h-2 w-2 rounded-full bg-primary breathe" /> {lang === 'fa' ? 'بارگذاری مرکز فرماندهی…' : 'Loading command center…'}
+      </div>
+    )
+  }
+
+  if (!data) {
+    return (
+      <div className="py-16 text-center text-muted-foreground text-sm space-y-3">
+        <div>{lang === 'fa' ? 'مرکز فرماندهی در حال آماده‌سازی است.' : 'Command center is being prepared.'}</div>
+        <div className="text-xs text-muted-foreground/70">{lang === 'fa' ? 'دادهٔ عملیاتی نمونه به‌زودی اضافه می‌شود.' : 'Demo operational data will be added soon.'}</div>
+        <Button variant="outline" size="sm" onClick={() => load()} className="h-8">{lang === 'fa' ? 'تلاش مجدد' : 'Retry'}</Button>
+      </div>
+    )
+  }
 
   const ack = async (id: string) => {
     setAcknowledged(s => new Set(s).add(id))
