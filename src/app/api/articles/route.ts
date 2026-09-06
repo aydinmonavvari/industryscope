@@ -6,28 +6,18 @@ export async function GET() {
   try {
     const articles = await db.article.findMany({ where: { published: true }, orderBy: { createdAt: 'desc' } })
     const safe = articles.map((a) => ({
-      id: a.id,
-      slug: a.slug,
-      category: a.category,
-      title: a.title,
-      insight: a.insight,
-      body: a.body,
-      stat: a.stat,
-      statLabel: a.statLabel,
-      delta: a.delta,
-      readMins: a.readMins,
-      published: a.published,
-      metaDescription: a.metaDescription,
-      keywords: a.keywords,
-      ogImage: a.ogImage,
-      externalLinks: a.externalLinks,
+      id: a.id, slug: a.slug, category: a.category, title: a.title, insight: a.insight, body: a.body,
+      stat: a.stat, statLabel: a.statLabel, delta: a.delta, readMins: a.readMins, published: a.published,
+      metaDescription: a.metaDescription, keywords: a.keywords, ogImage: a.ogImage, externalLinks: a.externalLinks,
       createdAt: a.createdAt instanceof Date ? a.createdAt.toISOString() : String(a.createdAt ?? ''),
       updatedAt: a.updatedAt instanceof Date ? a.updatedAt.toISOString() : String(a.updatedAt ?? ''),
     }))
     return NextResponse.json({ articles: safe })
-  } catch (e) {
+  } catch (e: any) {
+    const errMsg = e?.message || String(e)
+    const errCode = e?.code || 'unknown'
     console.error('articles list error', e)
-    return NextResponse.json({ articles: [], error: 'db_error' }, { status: 200 })
+    return NextResponse.json({ articles: [], error: 'db_error', details: errMsg, code: errCode, dbUrl: process.env.DATABASE_URL?.replace(/:[^:@]+@/, ':***@') || 'NOT SET' }, { status: 200 })
   }
 }
 
