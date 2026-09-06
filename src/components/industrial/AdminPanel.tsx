@@ -326,6 +326,16 @@ function ContentTab({ passcode }: { passcode: string }) {
         { key: 'copilot_desc', label: 'توضیح', type: 'textarea' },
       ],
     },
+    {
+      title: 'سئو (SEO)',
+      items: [
+        { key: 'seo_meta_title', label: 'عنوان متا (Meta Title) — برای موتورهای جستجو' },
+        { key: 'seo_meta_description', label: 'توضیحات متا (Meta Description)', type: 'textarea' },
+        { key: 'seo_keywords', label: 'کلمات کلیدی سایت (با ویرگول)' },
+        { key: 'seo_og_title', label: 'عنوان OpenGraph (شبکه‌های اجتماعی)' },
+        { key: 'seo_og_description', label: 'توضیح OpenGraph', type: 'textarea' },
+      ],
+    },
   ]
 
   const appearanceItems: { key: string; label: string; type: 'color' | 'text' }[] = [
