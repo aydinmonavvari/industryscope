@@ -9,16 +9,16 @@ const ECO = {
   healthscope: 'https://healthscope.ir',
 }
 
-const COVERS = [
-  '/images/articles/cover-1.png',
-  '/images/articles/cover-2.png',
-  '/images/articles/cover-3.png',
-  '/images/articles/cover-4.png',
-  '/images/articles/cover-5.png',
-  '/images/articles/cover-6.png',
-  '/images/articles/cover-7.png',
-  '/images/articles/cover-8.png',
-]
+const COVERS = {
+  'زنجیره تأمین': '/images/articles/cover-supply-chain.png',
+  'موجودی': '/images/articles/cover-inventory.png',
+  'لجستیک': '/images/articles/cover-logistics.png',
+  'هوش مصنوعی': '/images/articles/cover-ai.png',
+  'تولید': '/images/articles/cover-manufacturing.png',
+  'اقتصاد': '/images/articles/cover-economy.png',
+  'عملیات': '/images/articles/cover-operations.png',
+  'صنعت': '/images/articles/cover-industry.png',
+}
 
 // Helper to build a long body
 function body(intro: string, data: string, analysis: string, insight: string, actions: string[], links: { label: string; url: string }[]): string {
@@ -47,7 +47,7 @@ const articles: any[] = [
     slug: 'lead-time-volatility-working-capital', category: 'زنجیره تأمین',
     title: 'چرا نوسان زمان تدارک، مالیات پنهان سرمایهٔ در گردش است',
     insight: 'یک نوسان ۱۴٪ی زمان تدارک می‌تواند ۹ تا ۱۲ درصد سرمایهٔ بیشتری را بدون افزایش محافظت از اتمام، در موجودی قفل کند.',
-    stat: '۹.۲٪', statLabel: 'سرمایهٔ اضافی قفل‌شده', delta: '+۱۴٪ زمان تدارک', readMins: 8, cover: COVERS[0],
+    stat: '۹.۲٪', statLabel: 'سرمایهٔ اضافی قفل‌شده', delta: '+۱۴٪ زمان تدارک', readMins: 8, cover: COVERS['زنجیره تأمین'],
     metaDescription: 'نوسان زمان تدارک تأمین‌کننده، مالیات پنهان سرمایهٔ در گردش است. روش بهینه‌سازی موجودی با هوش مصنوعی و کاهش ریسک اتمام در زنجیره تأمین صنعتی.',
     keywords: 'زمان تدارک, سرمایه در گردش, مدیریت موجودی, هوش مصنوعی صنعت, زنجیره تأمین, ریسک تأمین, IndustryScope',
     body: body(
@@ -63,7 +63,7 @@ const articles: any[] = [
     slug: 'supplier-concentration-risk', category: 'زنجیره تأمین',
     title: 'تمرکز تأمین‌کننده: ریسکی که در ترازنامه دیده نمی‌شود',
     insight: 'وقبود ۴۰٪ خرید از یک تأمین‌کننده، احتمال توقف زنجیره را تا ۳ برابر افزایش می‌دهد.',
-    stat: '۴۰٪', statLabel: 'آستانه خطر تمرکز', delta: '۳× ریسک', readMins: 6, cover: COVERS[3],
+    stat: '۴۰٪', statLabel: 'آستانه خطر تمرکز', delta: '۳× ریسک', readMins: 6, cover: COVERS['هوش مصنوعی'],
     metaDescription: 'تمرکز خرید روی یک تأمین‌کننده ریسک پنهان زنجیره تأمین است. روش تشخیص، تنوع‌سازی و کاهش ریسک با تحلیل هوشمند.',
     keywords: 'تمرکز تأمین‌کننده, ریسک زنجیره تأمین, تنوع‌سازی تأمین, ریسک توقف, IndustryScope',
     body: body(
@@ -79,7 +79,7 @@ const articles: any[] = [
     slug: 'bullwhip-effect-detection', category: 'زنجیره تأمین',
     title: 'اثر شلاق چرمی: چرا تقاضای کوچک، موجودی بزرگ می‌سازد',
     insight: 'یک نوسان ۱۰٪ی تقاضای مشتری می‌تواند در بالادست به نوسان ۴۰٪ی سفارش تولید تبدیل شود.',
-    stat: '۴×', statLabel: 'تقویت نوسان', delta: '+۳۰٪', readMins: 7, cover: COVERS[0],
+    stat: '۴×', statLabel: 'تقویت نوسان', delta: '+۳۰٪', readMins: 7, cover: COVERS['زنجیره تأمین'],
     metaDescription: 'اثر شلاق چرمی (Bullwhip) تقاضای کوچک را به نوسانات بزرگ سفارش تبدیل می‌کند. روش تشخیص و کاهش با هم‌اطلاع‌سازی زنجیره.',
     keywords: 'اثر شلاق چرمی, bullwhip effect, نوسان تقاضا, هم‌اطلاع‌سازی زنجیره, IndustryScope',
     body: body(
@@ -96,7 +96,7 @@ const articles: any[] = [
     slug: 'dead-stock-decision', category: 'موجودی',
     title: 'موجودی راکد یک عدد نیست — تصمیمی است که به تعویق انداختید',
     insight: '۶۷٪ مازاد موجودی در توزیع‌کنندگان متوسط به تنها ۳ سیاست سفارش لمس‌نشده برمی‌گردد.',
-    stat: '۶۷٪', statLabel: 'مازاد ناشی از سیاست', delta: '-۲۲٪ گردش', readMins: 6, cover: COVERS[1],
+    stat: '۶۷٪', statLabel: 'مازاد ناشی از سیاست', delta: '-۲۲٪ گردش', readMins: 6, cover: COVERS['موجودی'],
     metaDescription: 'موجودی راکد تصمیم به تعویق‌افتاده است نه یک عدد. ۶۷٪ مازاد به سیاست‌های لمس‌نشده برمی‌گردد. روش تشخیص و اقدام با هوش مصنوعی.',
     keywords: 'موجودی راکد, مدیریت موجودی, گردش موجودی, هوش مصنوعی انبار, IndustryScope',
     body: body(
@@ -112,7 +112,7 @@ const articles: any[] = [
     slug: 'safety-stock-calculation', category: 'موجودی',
     title: 'موجودی ایمن: فرمول درست در برابر قاعدهٔ سرانگشتی',
     insight: 'استفاده از قاعدهٔ سرانگشتی برای موجودی ایمن می‌تواند تا ۳۵٪ سرمایهٔ اضافی ایجاد کند.',
-    stat: '۳۵٪', statLabel: 'سرمایهٔ هدر رفته', delta: '-۳۵٪', readMins: 6, cover: COVERS[1],
+    stat: '۳۵٪', statLabel: 'سرمایهٔ هدر رفته', delta: '-۳۵٪', readMins: 6, cover: COVERS['موجودی'],
     metaDescription: 'محاسبهٔ موجودی ایمن با فرمول آماری به جای قاعدهٔ سرانگشتی، سرمایهٔ آزاد می‌کند. روش محاسبه با واریانس تقاضا و زمان تدارک.',
     keywords: 'موجودی ایمن, safety stock, محاسبه موجودی, واریانس تقاضا, IndustryScope',
     body: body(
@@ -128,7 +128,7 @@ const articles: any[] = [
     slug: 'abc-analysis-beyond-basics', category: 'موجودی',
     title: 'تحلیل ABC فراتر از اصول: چرا ABC ساده دیگر کافی نیست',
     insight: 'تحلیل ABC دوبُعدی می‌تواند تا ۲۰٪ هزینهٔ نگهداری موجودی را کاهش دهد.',
-    stat: '۲۰٪', statLabel: 'کاهش هزینهٔ نگهداری', delta: '-۲۰٪', readMins: 5, cover: COVERS[1],
+    stat: '۲۰٪', statLabel: 'کاهش هزینهٔ نگهداری', delta: '-۲۰٪', readMins: 5, cover: COVERS['موجودی'],
     metaDescription: 'تحلیل ABC دوبُعدی (ارزش + نوسان) فراتر از ABC ساده، هزینهٔ نگهداری و ریسک موجودی را کاهش می‌دهد.',
     keywords: 'تحلیل ABC, مدیریت موجودی, ABC دوبُعدی, هزینه نگهداری, IndustryScope',
     body: body(
@@ -145,7 +145,7 @@ const articles: any[] = [
     slug: 'otif-system-property', category: 'لجستیک',
     title: 'OTIF ویژگی سیستم است، نه کارت امتیاز ترازنما',
     insight: 'ترازنماها تنها حدود ۳۰٪ واریانس OTIF را توضیح می‌دهند؛ بقیه به برنامه‌ریزی بالادستی برمی‌گردد.',
-    stat: '۷۰٪', statLabel: 'ناشی از برنامه‌ریزی', delta: '+۸ نقطه OTIF', readMins: 7, cover: COVERS[2],
+    stat: '۷۰٪', statLabel: 'ناشی از برنامه‌ریزی', delta: '+۸ نقطه OTIF', readMins: 7, cover: COVERS['لجستیک'],
     metaDescription: 'OTIF ویژگی سیستم است نه ترازنما. ۷۰٪ واریانس به برنامه‌ریزی بالادستی برمی‌گردد. روش تجزیه و بهبود با برج کنترل لجستیک.',
     keywords: 'OTIF, لجستیک, تحویل به‌موقع, برج کنترل, هوش مصنوعی لجستیک, IndustryScope',
     body: body(
@@ -161,7 +161,7 @@ const articles: any[] = [
     slug: 'last-mile-optimization', category: 'لجستیک',
     title: 'بهینه‌سازی مایل آخر: گران‌ترین کیلومتر زنجیره',
     insight: 'مایل آخر حدود ۵۳٪ هزینهٔ کل حمل‌ونقل را تشکیل می‌دهد.',
-    stat: '۵۳٪', statLabel: 'سهم هزینه', delta: '-۱۵٪ هزینه', readMins: 6, cover: COVERS[2],
+    stat: '۵۳٪', statLabel: 'سهم هزینه', delta: '-۱۵٪ هزینه', readMins: 6, cover: COVERS['لجستیک'],
     metaDescription: 'حمل‌ونقل مایل آخر ۵۳٪ هزینهٔ لجستیک است. روش بهینه‌سازی مسیر، تجمیع و تحویل هوشمند با کاهش هزینه.',
     keywords: 'مایل آخر, last mile, بهینه‌سازی مسیر, تجمیع محموله, هزینه لجستیک, IndustryScope',
     body: body(
@@ -177,7 +177,7 @@ const articles: any[] = [
     slug: 'warehouse-slotting-strategy', category: 'لجستیک',
     title: 'استراتژی slotting انبار: جایی که سرعت برداشت پنهان است',
     insight: 'slotting بهینه می‌تواند زمان برداشت را تا ۳۰٪ کاهش دهد.',
-    stat: '۳۰٪', statLabel: 'کاهش زمان برداشت', delta: '-۳۰٪', readMins: 5, cover: COVERS[2],
+    stat: '۳۰٪', statLabel: 'کاهش زمان برداشت', delta: '-۳۰٪', readMins: 5, cover: COVERS['لجستیک'],
     metaDescription: 'slotting انبار (مکان‌گذاری اقلام) می‌تواند زمان برداشت را تا ۳۰٪ کاهش دهد. روش اصولی مکان‌گذاری بر اساس تقاضا.',
     keywords: 'slotting انبار, مکان‌گذاری, زمان برداشت, بهینه‌سازی انبار, IndustryScope',
     body: body(
@@ -194,7 +194,7 @@ const articles: any[] = [
     slug: 'ai-hallucination-operations', category: 'هوش مصنوعی',
     title: 'توهم هوش مصنوعی در عملیات: چرا «باور کردن» خطرناک است',
     insight: 'مدل‌های زبانی بدون کنترل می‌توانند تا ۲۷٪ در پاسخ‌های عملیاتی اشتباه کنند.',
-    stat: '۲۷٪', statLabel: 'نرخ توهم', delta: '-۲۷٪', readMins: 7, cover: COVERS[3],
+    stat: '۲۷٪', statLabel: 'نرخ توهم', delta: '-۲۷٪', readMins: 7, cover: COVERS['هوش مصنوعی'],
     metaDescription: 'توهم (hallucination) هوش مصنوعی در عملیات صنعتی خطرناک است. روش کنترل با رجیستری ابزار و استناد به منبع.',
     keywords: 'توهم هوش مصنوعی, hallucination, رجیستری ابزار, سئو عملیاتی, IndustryScope, AI可信',
     body: body(
@@ -210,7 +210,7 @@ const articles: any[] = [
     slug: 'predictive-maintenance-data', category: 'هوش مصنوعی',
     title: 'نگهداری پیش‌بینانه: از تعمیر واکنشی به پیش‌بینی شکست',
     insight: 'نگهداری پیش‌بینانه می‌تواند توقف ناخواسته را تا ۵۰٪ کاهش دهد.',
-    stat: '۵۰٪', statLabel: 'کاهش توقف', delta: '-۵۰٪', readMins: 6, cover: COVERS[3],
+    stat: '۵۰٪', statLabel: 'کاهش توقف', delta: '-۵۰٪', readMins: 6, cover: COVERS['هوش مصنوعی'],
     metaDescription: 'نگهداری پیش‌بینانه با هوش مصنوعی توقف ناخواسته را تا ۵۰٪ کاهش می‌دهد. از تعمیر واکنشی به پیش‌بینی شکست ماشین.',
     keywords: 'نگهداری پیش‌بینانه, predictive maintenance, IoT, سنسور, شکست ماشین, IndustryScope',
     body: body(
@@ -226,7 +226,7 @@ const articles: any[] = [
     slug: 'demand-forecasting-ensemble', category: 'هوش مصنوعی',
     title: 'پیش‌بینی تقاضا با مدل‌های گروهی (Ensemble)',
     insight: 'مدل‌های گروهی می‌توانند خطای پیش‌بینی را تا ۲۵٪ کاهش دهند.',
-    stat: '۲۵٪', statLabel: 'کاهش خطا', delta: '-۲۵٪', readMins: 6, cover: COVERS[3],
+    stat: '۲۵٪', statLabel: 'کاهش خطا', delta: '-۲۵٪', readMins: 6, cover: COVERS['هوش مصنوعی'],
     metaDescription: 'پیش‌بینی تقاضا با مدل‌های گروهی (ensemble) خطا را کاهش می‌دهد. روش ترکیب مدل‌های آماری و یادگیری ماشین.',
     keywords: 'پیش‌بینی تقاضا, ensemble, مدل‌های گروهی, پیش‌بینی فروش, IndustryScope',
     body: body(
@@ -243,7 +243,7 @@ const articles: any[] = [
     slug: 'oee-measurement-truth', category: 'تولید',
     title: 'OEE: سنجش حقیقت بهره‌وری کل تجهیزات',
     insight: 'OEE درست اندازه‌گیری‌شده می‌تواند فرصت‌های پنهان ۲۰-۴۰٪ را آشکار کند.',
-    stat: '۴۰٪', statLabel: 'فرصت پنهان', delta: '+۴۰٪', readMins: 6, cover: COVERS[4],
+    stat: '۴۰٪', statLabel: 'فرصت پنهان', delta: '+۴۰٪', readMins: 6, cover: COVERS['تولید'],
     metaDescription: 'OEE (بهره‌وری کل تجهیزات) فرصت‌های پنهان تولید را آشکار می‌کند. روش محاسبهٔ درست OEE و بهبود بهره‌وری.',
     keywords: 'OEE, بهره‌وری تجهیزات, تولید, بهبود تولید, IndustryScope',
     body: body(
@@ -259,7 +259,7 @@ const articles: any[] = [
     slug: 'lean-manufacturing-waste', category: 'تولید',
     title: 'هفت اتلاف لین: جایی که پول شما در حال نشت است',
     insight: 'شناسایی هفت اتلاف لین می‌تواند هزینهٔ تولید را تا ۳۰٪ کاهش دهد.',
-    stat: '۳۰٪', statLabel: 'کاهش هزینه', delta: '-۳۰٪', readMins: 5, cover: COVERS[4],
+    stat: '۳۰٪', statLabel: 'کاهش هزینه', delta: '-۳۰٪', readMins: 5, cover: COVERS['تولید'],
     metaDescription: 'هفت اتلاف لین (تولید بدون اتلاف) و روش شناسایی و حذف آن‌ها با تحلیل هوشمند دادهٔ تولید.',
     keywords: 'لین, تولید بدون اتلاف, هفت اتلاف, بهبود تولید, IndustryScope',
     body: body(
@@ -275,7 +275,7 @@ const articles: any[] = [
     slug: 'production-line-balancing', category: 'تولید',
     title: 'توازن خط تولید: چرا گلوگاه پادشاه است',
     insight: 'رفع گلوگاه اصلی می‌تواند خروجی کل خط را تا ۲۰٪ افزایش دهد.',
-    stat: '۲۰٪', statLabel: 'افزایش خروجی', delta: '+۲۰٪', readMins: 5, cover: COVERS[4],
+    stat: '۲۰٪', statLabel: 'افزایش خروجی', delta: '+۲۰٪', readMins: 5, cover: COVERS['تولید'],
     metaDescription: 'توازن خط تولید و رفع گلوگاه می‌تواند خروجی را تا ۲۰٪ افزایش دهد. روش شناسایی و رفع گلوگاه با داده.',
     keywords: 'توازن خط تولید, گلوگاه, bottleneck, بهبود خروجی, IndustryScope',
     body: body(
@@ -292,7 +292,7 @@ const articles: any[] = [
     slug: 'inventory-cost-inflation', category: 'اقتصاد',
     title: 'هزینهٔ موجودی در تورم: پولی که روزانه آب می‌شود',
     insight: 'با تورم ۴۰٪، نگهداری موجودی اضافی می‌تواند ۱۵٪ هزینهٔ پنهان ایجاد کند.',
-    stat: '۱۵٪', statLabel: 'هزینهٔ پنهان', delta: '+۱۵٪', readMins: 6, cover: COVERS[6],
+    stat: '۱۵٪', statLabel: 'هزینهٔ پنهان', delta: '+۱۵٪', readMins: 6, cover: COVERS['اقتصاد'],
     metaDescription: 'هزینهٔ نگهداری موجودی در تورم بالا، هزینهٔ پنهان بزرگی است. روش مدیریت سرمایهٔ در گردش در شرایط تورمی.',
     keywords: 'هزینه موجودی, تورم, سرمایه در گردش, مدیریت موجودی, IndustryScope',
     body: body(
@@ -308,7 +308,7 @@ const articles: any[] = [
     slug: 'working-capital-optimization', category: 'اقتصاد',
     title: 'بهینه‌سازی سرمایهٔ در گردش: پول آزادشده بدون وام',
     insight: 'بهینه‌سازی سرمایهٔ در گردش می‌تواند تا ۲۵٪ نقدینگی آزاد کند.',
-    stat: '۲۵٪', statLabel: 'نقدینگی آزاد', delta: '+۲۵٪', readMins: 6, cover: COVERS[6],
+    stat: '۲۵٪', statLabel: 'نقدینگی آزاد', delta: '+۲۵٪', readMins: 6, cover: COVERS['اقتصاد'],
     metaDescription: 'بهینه‌سازی سرمایهٔ در گردش (موجودی + دریافتی + پرداختی) نقدینگی را بدون وام آزاد می‌کند. روش و فرمول‌ها.',
     keywords: 'سرمایه در گردش, نقدینگی, مدیریت موجودی, IndustryScope',
     body: body(
@@ -324,7 +324,7 @@ const articles: any[] = [
     slug: 'currency-risk-importers', category: 'اقتصاد',
     title: 'ریسک ارز برای واردکنندگان: پنهان‌ترین هزینهٔ زنجیره',
     insight: 'نوسان ۱۰٪ ارز می‌تواند حاشیهٔ واردکننده را تا ۴۰٪ تحت فشار بگذارد.',
-    stat: '۴۰٪', statLabel: 'فشار حاشیه', delta: '-۴۰٪', readMins: 5, cover: COVERS[6],
+    stat: '۴۰٪', statLabel: 'فشار حاشیه', delta: '-۴۰٪', readMins: 5, cover: COVERS['اقتصاد'],
     metaDescription: 'نوسان نرخ ارز ریسک پنهان واردکنندگان است. روش پوشش ریسک (hedge) و مدیریت قیمت‌گذاری.',
     keywords: 'ریسک ارز, واردات, پوشش ریسک, hedge, حاشیه سود, IndustryScope',
     body: body(
@@ -341,7 +341,7 @@ const articles: any[] = [
     slug: 'operational-kpi-dashboard', category: 'عملیات',
     title: 'داشبورد KPI عملیاتی: از داده تا تصمیم',
     insight: 'یک داشبورد متمرکز می‌تواند زمان تصمیم‌گیری را تا ۶۰٪ کاهش دهد.',
-    stat: '۶۰٪', statLabel: 'کاهش زمان تصمیم', delta: '-۶۰٪', readMins: 5, cover: COVERS[7],
+    stat: '۶۰٪', statLabel: 'کاهش زمان تصمیم', delta: '-۶۰٪', readMins: 5, cover: COVERS['عملیات'],
     metaDescription: 'داشبورد KPI عملیاتی متمرکز، زمان تصمیم‌گیری را کاهش می‌دهد. روش طراحی داشبورد اجرایی مؤثر.',
     keywords: 'داشبورد KPI, عملیات, تصمیم‌گیری, داشبورد اجرایی, IndustryScope',
     body: body(
@@ -357,7 +357,7 @@ const articles: any[] = [
     slug: 'root-cause-analysis-5why', category: 'عملیات',
     title: 'تحلیل علت ریشه‌ای ۵چرا: فراتر از علامت‌درمانی',
     insight: 'تحلیل ۵چرا می‌تواند ۸۰٪ عود مشکلات را کاهش دهد.',
-    stat: '۸۰٪', statLabel: 'کاهش عود', delta: '-۸۰٪', readMins: 5, cover: COVERS[7],
+    stat: '۸۰٪', statLabel: 'کاهش عود', delta: '-۸۰٪', readMins: 5, cover: COVERS['عملیات'],
     metaDescription: 'تحلیل علت ریشه‌ای با روش ۵چرا، عود مشکلات عملیاتی را کاهش می‌دهد. روش و مثال عملی.',
     keywords: 'تحلیل علت ریشه‌ای, ۵چرا, 5 why, بهبود عملیات, IndustryScope',
     body: body(
@@ -373,7 +373,7 @@ const articles: any[] = [
     slug: 'continuous-improvement-kaizen', category: 'عملیات',
     title: 'بهبود پیوستهٔ کایزن: تغییرات کوچک، اثر بزرگ',
     insight: 'برنامهٔ کایزن مستمر می‌تواند بهره‌وری را سالانه ۱۵٪ افزایش دهد.',
-    stat: '۱۵٪', statLabel: 'افزایش سالانه', delta: '+۱۵٪', readMins: 5, cover: COVERS[7],
+    stat: '۱۵٪', statLabel: 'افزایش سالانه', delta: '+۱۵٪', readMins: 5, cover: COVERS['عملیات'],
     metaDescription: 'فلسفهٔ کایزن (بهبود پیوسته) با تغییرات کوچک، بهره‌وری سالانه را افزایش می‌دهد. روش اجرا در محیط عملیاتی.',
     keywords: 'کایزن, بهبود پیوسته, kaizen, بهره‌وری, IndustryScope',
     body: body(
@@ -390,7 +390,7 @@ const articles: any[] = [
     slug: 'industry-4-data-backbone', category: 'صنعت',
     title: 'ستون فقرات دادهٔ صنعت ۴.۰',
     insight: 'بدون یک لایهٔ دادهٔ واحد، صنعت ۴.۰ به جزایر داده تبدیل می‌شود.',
-    stat: '۴۰٪', statLabel: 'کارایی دادهٔ پراکنده', delta: '+۴۰٪', readMins: 6, cover: COVERS[0],
+    stat: '۴۰٪', statLabel: 'کارایی دادهٔ پراکنده', delta: '+۴۰٪', readMins: 6, cover: COVERS['صنعت'],
     metaDescription: 'ستون فقرات دادهٔ یکپارچه برای صنعت ۴.۰، جزایر داده را حذف می‌کند. معماری لایهٔ هوش عملیاتی.',
     keywords: 'صنعت ۴, Industry 4.0, لایه داده, یکپارچگی, IndustryScope',
     body: body(
@@ -406,7 +406,7 @@ const articles: any[] = [
     slug: 'digital-twin-readiness', category: 'صنعت',
     title: 'آمادگی همزن دیجیتال: از تصور به واقعیت',
     insight: 'همزن دیجیتال متصل می‌تواند زمان شروع تولید را تا ۳۰٪ کاهش دهد.',
-    stat: '۳۰٪', statLabel: 'کاهش زمان شروع', delta: '-۳۰٪', readMins: 6, cover: COVERS[0],
+    stat: '۳۰٪', statLabel: 'کاهش زمان شروع', delta: '-۳۰٪', readMins: 6, cover: COVERS['صنعت'],
     metaDescription: 'همزن دیجیتال (Digital Twin) متصل به دادهٔ زنده، زمان شروع تولید و هزینهٔ آزمایش را کاهش می‌دهد.',
     keywords: 'همزن دیجیتال, digital twin, شبیه‌سازی, IndustryScope',
     body: body(
