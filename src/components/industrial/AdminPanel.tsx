@@ -15,6 +15,7 @@ type Article = {
   id: string; slug: string; category: string; title: string; insight: string; body: string
   stat?: string | null; statLabel?: string | null; delta?: string | null; readMins: number
   published: boolean; metaDescription?: string | null; keywords?: string | null; externalLinks?: string | null
+  ogImage?: string | null
 }
 
 export default function AdminPanel() {
@@ -162,7 +163,7 @@ function ArticlesTab({ passcode }: { passcode: string }) {
   }, [passcode])
   useEffect(() => { load() }, [load])
 
-  const blank: Article = { id: '', slug: '', category: 'Industry', title: '', insight: '', body: '', stat: '', statLabel: '', delta: '', readMins: 5, published: true, metaDescription: '', keywords: '', externalLinks: '' }
+  const blank: Article = { id: '', slug: '', category: 'صنعت', title: '', insight: '', body: '', stat: '', statLabel: '', delta: '', readMins: 5, published: true, metaDescription: '', keywords: '', externalLinks: '', ogImage: '' }
 
   const del = async (slug: string) => {
     if (!confirm('حذف مقاله؟')) return
@@ -231,7 +232,18 @@ function ArticleEditor({ article, isNew, passcode, onClose, onSaved }: { article
       </div>
       <div className="grid sm:grid-cols-2 gap-3">
         <Field label="Slug (آدرس انگلیسی) *"><Input value={f.slug} onChange={e => set('slug', e.target.value)} dir="ltr" placeholder="my-article" className="bg-background/60" /></Field>
-        <Field label="دسته‌بندی"><Input value={f.category} onChange={e => set('category', e.target.value)} placeholder="Industry" className="bg-background/60" /></Field>
+        <Field label="دسته‌بندی">
+          <select value={f.category} onChange={e => set('category', e.target.value)} className="w-full h-10 rounded-md border border-input bg-background/60 px-3 text-sm">
+            <option value="صنعت">صنعت</option>
+            <option value="لجستیک">لجستیک</option>
+            <option value="زنجیره تأمین">زنجیره تأمین</option>
+            <option value="هوش مصنوعی">هوش مصنوعی</option>
+            <option value="تولید">تولید</option>
+            <option value="اقتصاد">اقتصاد</option>
+            <option value="عملیات">عملیات</option>
+            <option value="موجودی">موجودی</option>
+          </select>
+        </Field>
       </div>
       <Field label="عنوان *"><Input value={f.title} onChange={e => set('title', e.target.value)} className="bg-background/60" /></Field>
       <Field label="بینش (خلاصهٔ کوتاه) *"><Textarea value={f.insight} onChange={e => set('insight', e.target.value)} rows={2} className="bg-background/60" /></Field>
@@ -241,9 +253,17 @@ function ArticleEditor({ article, isNew, passcode, onClose, onSaved }: { article
         <Field label="برچسب آمار"><Input value={f.statLabel || ''} onChange={e => set('statLabel', e.target.value)} className="bg-background/60" /></Field>
         <Field label="تغییر (دلتا)"><Input value={f.delta || ''} onChange={e => set('delta', e.target.value)} className="bg-background/60" /></Field>
       </div>
+      <Field label="آدرس عکس کاور (URL)">
+        <Input value={f.ogImage || ''} onChange={e => set('ogImage', e.target.value)} dir="ltr" placeholder="/images/articles/cover-industry.png" className="bg-background/60" />
+      </Field>
+      {f.ogImage && (
+        <div className="rounded-lg overflow-hidden border border-border/40 max-h-32">
+          <img src={f.ogImage} alt="cover preview" className="w-full h-full object-cover" />
+        </div>
+      )}
       {/* SEO */}
       <div className="border-t border-border/40 pt-4 space-y-3">
-        <div className="text-xs uppercase tracking-wider text-emerald-accent font-semibold">سئو</div>
+        <div className="text-xs uppercase tracking-wider text-emerald-accent font-semibold">سئو (SEO)</div>
         <Field label="Meta Description (توضیحات متا — حداکثر ۱۶۰ کاراکتر)"><Textarea value={f.metaDescription || ''} onChange={e => set('metaDescription', e.target.value)} rows={2} maxLength={500} className="bg-background/60" /></Field>
         <Field label="کلمات کلیدی (با ویرگول)"><Input value={f.keywords || ''} onChange={e => set('keywords', e.target.value)} placeholder="کلمه۱, کلمه۲, keyword3" className="bg-background/60" /></Field>
         <Field label="لینک‌های خارجی (JSON — برای سئو بین‌سایتی)"><Textarea value={f.externalLinks || ''} onChange={e => set('externalLinks', e.target.value)} rows={3} dir="ltr" placeholder='[{"label":"FinScope","url":"https://finscope.ir"}]' className="bg-background/60 font-mono text-xs" /></Field>
